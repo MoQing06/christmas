@@ -63,7 +63,7 @@
     /* 右上角音乐胶囊控制组（上一首 / 播放暂停 / 下一首） */
     .music-bar-wrap {
       position: fixed;
-      top: calc(env(safe-area-inset-top, 0px) + clamp(24px, 5vh, 48px));
+      top: calc(env(safe-area-inset-top, 0px) + clamp(68px, 11vh, 96px));
       right: clamp(18px, 5vw, 52px);
       display: flex;
       flex-direction: column;
@@ -315,7 +315,7 @@
         <svg viewBox="0 0 24 24"><path d="M6 18l8.5-6L6 6v12zM16 6v12h2V6h-2z"/></svg>
       </button>
     </div>
-    <div class="track-toast" id="track-toast">♪ 01 · Wasted (Nightcore)</div>
+    <div class="track-toast" id="track-toast">♪ 1 · M3</div>
   </div>
 
   <canvas id="c"></canvas>
@@ -337,7 +337,7 @@
 
   // ================= 歌单配置区（以后加新歌只需往仓库传文件并在这里加一行） =================
   var PLAYLIST = [
-    { title: 'Wasted (Nightcore)', src: './bgm.mp3.mp4' },
+    { title: 'M', src: './bgm.mp3.mp4' },
     { title: '冬日恋歌 02', src: './bgm2.mp3' },
     { title: '星光圣诞 03', src: './bgm3.mp3' }
   ];
