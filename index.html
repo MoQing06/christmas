@@ -1,1137 +1,1258 @@
 <!DOCTYPE html>
 <html lang="zh">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
-    <title>Merry Christmas - For Yi</title>
-    <style>
-        * {
-          box-sizing: border-box;
-          user-select: none;
-          -webkit-user-select: none;
-          -webkit-tap-highlight-color: transparent;
-        }
-        html, body {
-          margin: 0;
-          width: 100%;
-          height: 100%;
-          overflow: hidden;
-          background: #0d050c;
-          font-family: -apple-system, BlinkMacSystemFont, "PingFang SC", "Hiragino Sans GB", "Microsoft YaHei", sans-serif;
-        }
-        canvas {
-          display: block;
-          width: 100%;
-          height: 100%;
-          touch-action: none;
-          cursor: grab;
-        }
-        canvas:active { cursor: grabbing; }
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
+  <title>Merry Christmas - For Yi</title>
+  <style>
+    * {
+      box-sizing: border-box;
+      user-select: none;
+      -webkit-user-select: none;
+      -webkit-tap-highlight-color: transparent;
+    }
+    html, body {
+      margin: 0;
+      width: 100%;
+      height: 100%;
+      overflow: hidden;
+      background: #0d050c;
+      font-family: -apple-system, BlinkMacSystemFont, "PingFang SC", "Hiragino Sans GB", "Microsoft YaHei", sans-serif;
+    }
+    canvas {
+      display: block;
+      width: 100%;
+      height: 100%;
+      touch-action: none;
+      cursor: grab;
+    }
+    canvas:active { cursor: grabbing; }
 
-        /* 左上角排版文字（适配安卓与iOS顶部安全区） */
-        .header-overlay {
-          position: fixed;
-          top: calc(env(safe-area-inset-top, 0px) + clamp(26px, 5.5vh, 52px));
-          left: clamp(22px, 6vw, 56px);
-          pointer-events: none;
-          z-index: 10;
-          color: #f7dce8;
-        }
-        .sub-tag {
-          font-size: clamp(10px, 2.5vw, 12px);
-          letter-spacing: 0.2em;
-          color: rgba(235, 195, 215, 0.72);
-          margin-bottom: 6px;
-          text-transform: uppercase;
-        }
-        .main-title {
-          font-family: "Georgia", "Times New Roman", "Songti SC", serif;
-          font-weight: 400;
-          font-size: clamp(32px, 8vw, 54px);
-          line-height: 1.08;
-          margin: 0 0 10px 0;
-          color: #fce4f0;
-          text-shadow: 0 4px 20px rgba(255, 130, 190, 0.35);
-        }
-        .wish-text {
-          font-size: clamp(11px, 2.8vw, 13px);
-          line-height: 1.65;
-          color: rgba(235, 200, 218, 0.78);
-          letter-spacing: 0.05em;
-        }
+    /* 左上角排版文字 */
+    .header-overlay {
+      position: fixed;
+      top: calc(env(safe-area-inset-top, 0px) + clamp(26px, 5.5vh, 52px));
+      left: clamp(22px, 6vw, 56px);
+      pointer-events: none;
+      z-index: 10;
+      color: #f7dce8;
+    }
+    .sub-tag {
+      font-size: clamp(10px, 2.5vw, 12px);
+      letter-spacing: 0.2em;
+      color: rgba(235, 195, 215, 0.72);
+      margin-bottom: 6px;
+      text-transform: uppercase;
+    }
+    .main-title {
+      font-family: "Georgia", "Times New Roman", "Songti SC", serif;
+      font-weight: 400;
+      font-size: clamp(32px, 8vw, 54px);
+      line-height: 1.08;
+      margin: 0 0 10px 0;
+      color: #fce4f0;
+      text-shadow: 0 4px 20px rgba(255, 130, 190, 0.35);
+    }
+    .wish-text {
+      font-size: clamp(11px, 2.8vw, 13px);
+      line-height: 1.65;
+      color: rgba(235, 200, 218, 0.78);
+      letter-spacing: 0.05em;
+    }
 
-        /* 底部交互提示 */
-        .footer-hint {
-          position: fixed;
-          bottom: calc(env(safe-area-inset-bottom, 0px) + clamp(16px, 3.5vh, 30px));
-          left: 0;
-          right: 0;
-          text-align: center;
-          font-size: 11px;
-          letter-spacing: 0.14em;
-          color: rgba(230, 190, 210, 0.5);
-          pointer-events: none;
-          z-index: 10;
-        }
+    /* 右上角可爱音乐开关按钮 */
+    .music-btn {
+      position: fixed;
+      top: calc(env(safe-area-inset-top, 0px) + clamp(26px, 5.5vh, 52px));
+      right: clamp(22px, 6vw, 56px);
+      width: 44px;
+      height: 44px;
+      border-radius: 50%;
+      background: linear-gradient(145deg, rgba(68, 28, 58, 0.85), rgba(34, 12, 28, 0.92));
+      border: 1.5px solid rgba(255, 190, 222, 0.45);
+      box-shadow: 0 6px 20px rgba(0, 0, 0, 0.45), 0 0 16px rgba(255, 130, 190, 0.22);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      cursor: pointer;
+      z-index: 25;
+      transition: transform 0.25s cubic-bezier(0.34, 1.56, 0.64, 1), box-shadow 0.3s ease;
+    }
+    .music-btn:active {
+      transform: scale(0.9);
+    }
+    .music-btn .icon-wrap {
+      width: 22px;
+      height: 22px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      position: relative;
+    }
+    .music-btn svg {
+      width: 20px;
+      height: 20px;
+      fill: #ffd8eb;
+      filter: drop-shadow(0 0 6px rgba(255, 165, 210, 0.6));
+    }
+    .music-btn.playing {
+      box-shadow: 0 6px 20px rgba(0, 0, 0, 0.45), 0 0 22px rgba(255, 135, 195, 0.55);
+      border-color: rgba(255, 210, 232, 0.8);
+    }
+    .music-btn.playing .icon-wrap {
+      animation: spinSlow 6s linear infinite;
+    }
+    .music-btn.playing::after {
+      content: "";
+      position: absolute;
+      inset: -5px;
+      border-radius: 50%;
+      border: 1px solid rgba(255, 180, 215, 0.45);
+      animation: pulseRing 2.2s ease-out infinite;
+      pointer-events: none;
+    }
+    .music-btn .mute-slash {
+      position: absolute;
+      width: 24px;
+      height: 2px;
+      background: #f2a2c8;
+      border-radius: 2px;
+      transform: rotate(-45deg);
+      transition: opacity 0.25s ease, transform 0.25s ease;
+    }
+    .music-btn.playing .mute-slash {
+      opacity: 0;
+      transform: rotate(-45deg) scale(0.4);
+    }
 
-        /* 礼物弹窗（移除耗性能的blur，保证安卓秒弹出不卡顿） */
-        .modal-mask {
-          position: fixed;
-          inset: 0;
-          background: rgba(8, 3, 8, 0.78);
-          display: flex;
-          align-items: center;
-          justify-content: center;
-          opacity: 0;
-          visibility: hidden;
-          pointer-events: none;
-          transition: opacity 0.28s ease, visibility 0.28s ease;
-          z-index: 30;
-          padding: 24px;
-        }
-        .modal-mask.show {
-          opacity: 1;
-          visibility: visible;
-          pointer-events: auto;
-        }
-        .gift-card {
-          background: linear-gradient(155deg, #36152f 0%, #1c0918 100%);
-          border: 1px solid rgba(255, 185, 220, 0.35);
-          border-radius: 20px;
-          padding: 28px 24px;
-          max-width: 310px;
-          width: 100%;
-          text-align: center;
-          color: #fce8f2;
-          box-shadow: 0 18px 45px rgba(0, 0, 0, 0.75), 0 0 28px rgba(255, 110, 180, 0.22);
-          transform: translateY(18px) scale(0.95);
-          transition: transform 0.3s cubic-bezier(0.22, 1, 0.36, 1);
-        }
-        .modal-mask.show .gift-card {
-          transform: translateY(0) scale(1);
-        }
-        .gift-num {
-          font-family: "Georgia", serif;
-          font-size: 12px;
-          letter-spacing: 0.25em;
-          color: #f5add0;
-          margin-bottom: 10px;
-        }
-        .gift-title {
-          font-size: 18px;
-          font-weight: 600;
-          margin: 0 0 12px 0;
-          color: #ffffff;
-        }
-        .gift-desc {
-          font-size: 14px;
-          line-height: 1.75;
-          color: rgba(248, 220, 234, 0.9);
-          margin: 0 0 22px 0;
-        }
-        .gift-btn {
-          background: linear-gradient(90deg, #de6ea2, #b5497c);
-          border: none;
-          color: #fff;
-          padding: 10px 30px;
-          border-radius: 22px;
-          font-size: 13px;
-          letter-spacing: 0.12em;
-          cursor: pointer;
-          box-shadow: 0 4px 14px rgba(214, 104, 155, 0.4);
-        }
-        .gift-btn:active {
-          transform: scale(0.96);
-        }
-    </style>
+    @keyframes spinSlow {
+      from { transform: rotate(0deg); }
+      to { transform: rotate(360deg); }
+    }
+    @keyframes pulseRing {
+      0% { transform: scale(0.95); opacity: 0.85; }
+      100% { transform: scale(1.38); opacity: 0; }
+    }
+
+    /* 底部交互提示 */
+    .footer-hint {
+      position: fixed;
+      bottom: calc(env(safe-area-inset-bottom, 0px) + clamp(16px, 3.5vh, 30px));
+      left: 0;
+      right: 0;
+      text-align: center;
+      font-size: 11px;
+      letter-spacing: 0.14em;
+      color: rgba(230, 190, 210, 0.5);
+      pointer-events: none;
+      z-index: 10;
+    }
+
+    /* 礼物弹窗 */
+    .modal-mask {
+      position: fixed;
+      inset: 0;
+      background: rgba(8, 3, 8, 0.78);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      opacity: 0;
+      visibility: hidden;
+      pointer-events: none;
+      transition: opacity 0.28s ease, visibility 0.28s ease;
+      z-index: 30;
+      padding: 24px;
+    }
+    .modal-mask.show {
+      opacity: 1;
+      visibility: visible;
+      pointer-events: auto;
+    }
+    .gift-card {
+      background: linear-gradient(155deg, #36152f 0%, #1c0918 100%);
+      border: 1px solid rgba(255, 185, 220, 0.35);
+      border-radius: 20px;
+      padding: 28px 24px;
+      max-width: 310px;
+      width: 100%;
+      text-align: center;
+      color: #fce8f2;
+      box-shadow: 0 18px 45px rgba(0, 0, 0, 0.75), 0 0 28px rgba(255, 110, 180, 0.22);
+      transform: translateY(18px) scale(0.95);
+      transition: transform 0.3s cubic-bezier(0.22, 1, 0.36, 1);
+    }
+    .modal-mask.show .gift-card {
+      transform: translateY(0) scale(1);
+    }
+    .gift-num {
+      font-family: "Georgia", serif;
+      font-size: 12px;
+      letter-spacing: 0.25em;
+      color: #f5add0;
+      margin-bottom: 10px;
+    }
+    .gift-title {
+      font-size: 18px;
+      font-weight: 600;
+      margin: 0 0 12px 0;
+      color: #ffffff;
+    }
+    .gift-desc {
+      font-size: 14px;
+      line-height: 1.75;
+      color: rgba(248, 220, 234, 0.9);
+      margin: 0 0 22px 0;
+    }
+    .gift-btn {
+      background: linear-gradient(90deg, #de6ea2, #b5497c);
+      border: none;
+      color: #fff;
+      padding: 10px 30px;
+      border-radius: 22px;
+      font-size: 13px;
+      letter-spacing: 0.12em;
+      cursor: pointer;
+      box-shadow: 0 4px 14px rgba(214, 104, 155, 0.4);
+    }
+    .gift-btn:active {
+      transform: scale(0.96);
+    }
+  </style>
 </head>
 <body>
 
-<div class="header-overlay">
-    <div class="sub-tag"> &nbsp;·&nbsp; </div>
+  <div class="header-overlay">
+    <div class="sub-tag">FOR YI &nbsp;·&nbsp; A LITTLE WINTER WISH</div>
     <h1 class="main-title">Merry Christmas</h1>
     <div class="wish-text">
-        愿鲜花与星光，都落在你的愿望里。<br>
-        愿这一份甜，陪你走过整个冬天。
+      愿鲜花与星光，都落在你的愿望里。<br>
+      愿这一份甜，陪你走过整个冬天。
     </div>
-</div>
+  </div>
 
-<canvas id="c"></canvas>
+  <!-- 对应仓库中上传的 bgm.mp3.mp4 文件 -->
+  <audio id="bgm" src="./bgm.mp3.mp4" loop preload="auto" playsinline webkit-playsinline></audio>
 
-<div class="footer-hint"> &nbsp;·&nbsp;  &nbsp;·&nbsp; </div>
+  <button class="music-btn" id="music-toggle" aria-label="背景音乐开关">
+    <div class="icon-wrap">
+      <svg viewBox="0 0 24 24">
+        <path d="M12 3v10.55c-.59-.34-1.27-.55-2-.55-2.21 0-4 1.79-4 4s1.79 4 4 4 4-1.79 4-4V7h4V3h-6z"/>
+      </svg>
+    </div>
+    <span class="mute-slash"></span>
+  </button>
 
-<div class="modal-mask" id="modal">
+  <canvas id="c"></canvas>
+
+  <div class="footer-hint">拖动旋转 &nbsp;·&nbsp; 点开礼物 &nbsp;·&nbsp; 点击星星或夜空放烟花</div>
+
+  <div class="modal-mask" id="modal">
     <div class="gift-card">
-        <div class="gift-num" id="m-num">GIFT 01</div>
-        <h3 class="gift-title" id="m-title">冬日第一份甜</h3>
-        <p class="gift-desc" id="m-desc"></p>
-        <button class="gift-btn" id="m-close">收下祝福</button>
+      <div class="gift-num" id="m-num">GIFT 01</div>
+      <h3 class="gift-title" id="m-title">冬日第一份甜</h3>
+      <p class="gift-desc" id="m-desc"></p>
+      <button class="gift-btn" id="m-close">收下祝福</button>
     </div>
-</div>
+  </div>
 
 <script>
-    (function () {
-      'use strict';
+(function () {
+  'use strict';
 
-      var canvas = document.getElementById('c');
-      var ctx = canvas.getContext('2d', { alpha: false });
-      var TAU = Math.PI * 2;
-      var W, H, dpr, focal;
-      var CAM_D = 33;
-      var CAM_Y = -0.6;
+  var bgm = document.getElementById('bgm');
+  var musicBtn = document.getElementById('music-toggle');
+  var userExplicitlyMuted = false;
 
-      // 检测是否为移动端，自动调优粒子密度以保证安卓满帧流畅
-      var isMobile = /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent) || window.innerWidth < 768;
+  bgm.volume = 0.75;
 
-      // 交互状态（优化触摸防抖与点击判定）
-      var userAngle = 0;
-      var autoSpeed = 0.22;
-      var isDragging = false;
-      var startX = 0;
-      var startY = 0;
-      var lastX = 0;
-      var totalMoveDist = 0;
-      var starBurst = 0;
-      var starScreenPos = { x: 0, y: 0, r: 48 };
-      var giftHitBoxes = [];
+  function updateMusicUI() {
+    if (!bgm.paused) {
+      musicBtn.classList.add('playing');
+    } else {
+      musicBtn.classList.remove('playing');
+    }
+  }
 
-      // 场景集合
-      var needles = [];
-      var lightStrings = [];
-      var ornaments = [];
-      var snowFlakes = [];
-      var dustParticles = [];
-      var bokehSpots = [];
+  function playBgm(fromUserClick) {
+    if (!bgm.paused) return;
+    if (!fromUserClick && userExplicitlyMuted) return;
+    var playPromise = bgm.play();
+    if (playPromise !== undefined) {
+      playPromise.then(function () {
+        updateMusicUI();
+      }).catch(function () {
+        updateMusicUI();
+      });
+    }
+  }
 
-      // 烟花与特效粒子
-      var fireworkRockets = [];
-      var fireworkParticles = [];
-      var magicSpirits = [];
-      var trailParticles = [];
-      var nextAutoFirework = 1.6;
+  function pauseBgm(byUser) {
+    if (byUser) userExplicitlyMuted = true;
+    bgm.pause();
+    updateMusicUI();
+  }
 
-      // 预渲染贴图
-      var glowSprites = [];
-      var ornamentSprites = {};
+  bgm.addEventListener('play', updateMusicUI);
+  bgm.addEventListener('pause', updateMusicUI);
 
-      var FIREWORK_PALETTES = [
-        ['255, 235, 245', '255, 145, 200', '235, 95, 165'],
-        ['255, 248, 225', '255, 210, 130', '240, 165, 95'],
-        ['248, 235, 255', '210, 160, 255', '175, 115, 235']
-      ];
+  musicBtn.addEventListener('click', function (e) {
+    e.stopPropagation();
+    if (!bgm.paused) {
+      pauseBgm(true);
+    } else {
+      userExplicitlyMuted = false;
+      playBgm(true);
+      var rect = musicBtn.getBoundingClientRect();
+      spawnBurstParticles(rect.left + rect.width / 2, rect.top + rect.height / 2, 16);
+    }
+  });
 
-      var GIFT_DATA = [
-        { id: '01', title: '星光与浪漫', desc: '愿你眼底常有星辰闪烁，所遇皆温柔，所求皆如愿。', boxColor: '#7a223d', lidColor: '#962c4d', ribbon: '#e3c5a8', angle: -1.15, dist: 8.6 },
-        { id: '02', title: '暖冬小确幸', desc: '天冷的时候有热茶与拥抱，平凡的日子里永远藏着小惊喜。', boxColor: '#b89f8d', lidColor: '#cfb6a4', ribbon: '#f5e6d8', angle: 0.72, dist: 8.4 },
-        { id: '03', title: '一整年的甜', desc: '把所有的烦恼都留在今年，明年的每一天都像糖果一样甜。', boxColor: '#9e6b43', lidColor: '#b88054', ribbon: '#ebd0b0', angle: 0.08, dist: 9.2 },
-        { id: '04', title: '永不落幕的梦', desc: '愿你永远保持热爱与天真，做自己世界里最耀眼的小公主。', boxColor: '#691932', lidColor: '#822240', ribbon: '#d9bca3', angle: -0.58, dist: 8.5 }
-      ];
+  document.addEventListener('WeixinJSBridgeReady', function () {
+    playBgm(false);
+  }, false);
 
-      function rand(max, min) {
-        if (min === undefined) min = 0;
-        return min + Math.random() * (max - min);
-      }
+  document.addEventListener('visibilitychange', function () {
+    if (document.hidden && !bgm.paused) {
+      pauseBgm(false);
+    }
+  });
 
-      function makeGlowSprite(rgb) {
-        var s = 48, cv = document.createElement('canvas');
-        cv.width = cv.height = s;
-        var g = cv.getContext('2d');
-        var grad = g.createRadialGradient(s / 2, s / 2, 0, s / 2, s / 2, s / 2);
-        grad.addColorStop(0, 'rgba(255,255,255,1)');
-        grad.addColorStop(0.2, 'rgba(' + rgb[0] + ',' + rgb[1] + ',' + rgb[2] + ',0.95)');
-        grad.addColorStop(0.48, 'rgba(' + rgb[0] + ',' + rgb[1] + ',' + rgb[2] + ',0.28)');
-        grad.addColorStop(1, 'rgba(' + rgb[0] + ',' + rgb[1] + ',' + rgb[2] + ',0)');
-        g.fillStyle = grad;
-        g.fillRect(0, 0, s, s);
-        return cv;
-      }
+  var canvas = document.getElementById('c');
+  var ctx = canvas.getContext('2d', { alpha: false });
+  var TAU = Math.PI * 2;
+  var W, H, dpr, focal;
+  var CAM_D = 33;
+  var CAM_Y = -0.6;
 
-      function buildOrnamentSprites() {
-        function createBear(furColor, earInner, blushColor) {
-          var s = 84, cv = document.createElement('canvas');
-          cv.width = cv.height = s;
-          var g = cv.getContext('2d');
-          var cx = s / 2, cy = s / 2 + 3;
+  var isMobile = /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent) || window.innerWidth < 768;
 
-          g.fillStyle = furColor;
-          g.beginPath(); g.arc(cx - 18, cy - 17, 9.5, 0, TAU); g.fill();
-          g.beginPath(); g.arc(cx + 18, cy - 17, 9.5, 0, TAU); g.fill();
+  var userAngle = 0;
+  var autoSpeed = 0.22;
+  var isDragging = false;
+  var startX = 0;
+  var startY = 0;
+  var lastX = 0;
+  var totalMoveDist = 0;
+  var starBurst = 0;
+  var starScreenPos = { x: 0, y: 0, r: 48 };
+  var giftHitBoxes = [];
 
-          g.fillStyle = earInner;
-          g.beginPath(); g.arc(cx - 18, cy - 17, 5.2, 0, TAU); g.fill();
-          g.beginPath(); g.arc(cx + 18, cy - 17, 5.2, 0, TAU); g.fill();
+  var needles = [];
+  var lightStrings = [];
+  var ornaments = [];
+  var snowFlakes = [];
+  var dustParticles = [];
+  var bokehSpots = [];
 
-          var grad = g.createRadialGradient(cx - 7, cy - 8, 3, cx, cy, 26);
-          grad.addColorStop(0, '#ffffff');
-          grad.addColorStop(0.35, furColor);
-          grad.addColorStop(1, earInner);
-          g.fillStyle = grad;
-          g.beginPath();
-          g.ellipse(cx, cy, 24, 20, 0, 0, TAU);
-          g.fill();
+  var fireworkRockets = [];
+  var fireworkParticles = [];
+  var magicSpirits = [];
+  var trailParticles = [];
+  var nextAutoFirework = 1.6;
 
-          g.fillStyle = blushColor;
-          g.beginPath(); g.ellipse(cx - 13, cy + 3.5, 4.5, 2.6, 0, 0, TAU); g.fill();
-          g.beginPath(); g.ellipse(cx + 13, cy + 3.5, 4.5, 2.6, 0, 0, TAU); g.fill();
+  var glowSprites = [];
+  var ornamentSprites = {};
 
-          g.fillStyle = '#2b1820';
-          g.beginPath(); g.arc(cx - 8, cy - 2, 2.3, 0, TAU); g.fill();
-          g.beginPath(); g.arc(cx + 8, cy - 2, 2.3, 0, TAU); g.fill();
+  var FIREWORK_PALETTES = [
+    ['255, 235, 245', '255, 145, 200', '235, 95, 165'],
+    ['255, 248, 225', '255, 210, 130', '240, 165, 95'],
+    ['248, 235, 255', '210, 160, 255', '175, 115, 235']
+  ];
 
-          g.fillStyle = '#fff';
-          g.beginPath(); g.arc(cx - 8.7, cy - 2.8, 0.8, 0, TAU); g.fill();
-          g.beginPath(); g.arc(cx + 7.3, cy - 2.8, 0.8, 0, TAU); g.fill();
+  var GIFT_DATA = [
+    { id: '01', title: '星光与浪漫', desc: '愿你眼底常有星辰闪烁，所遇皆温柔，所求皆如愿。', boxColor: '#7a223d', lidColor: '#962c4d', ribbon: '#e3c5a8', angle: -1.15, dist: 8.6 },
+    { id: '02', title: '暖冬小确幸', desc: '天冷的时候有热茶与拥抱，平凡的日子里永远藏着小惊喜。', boxColor: '#b89f8d', lidColor: '#cfb6a4', ribbon: '#f5e6d8', angle: 0.72, dist: 8.4 },
+    { id: '03', title: '一整年的甜', desc: '把所有的烦恼都留在今年，明年的每一天都像糖果一样甜。', boxColor: '#9e6b43', lidColor: '#b88054', ribbon: '#ebd0b0', angle: 0.08, dist: 9.2 },
+    { id: '04', title: '永不落幕的梦', desc: '愿你永远保持热爱与天真，做自己世界里最耀眼的小公主。', boxColor: '#691932', lidColor: '#822240', ribbon: '#d9bca3', angle: -0.58, dist: 8.5 }
+  ];
 
-          g.fillStyle = '#3d222c';
-          g.beginPath(); g.ellipse(cx, cy + 2.5, 2.8, 2, 0, 0, TAU); g.fill();
-          g.strokeStyle = '#3d222c';
-          g.lineWidth = 1.5;
-          g.lineCap = 'round';
-          g.beginPath();
-          g.arc(cx - 2.2, cy + 4.8, 2.2, 0.1 * Math.PI, 0.9 * Math.PI);
-          g.stroke();
-          g.beginPath();
-          g.arc(cx + 2.2, cy + 4.8, 2.2, 0.1 * Math.PI, 0.9 * Math.PI);
-          g.stroke();
+  function rand(max, min) {
+    if (min === undefined) min = 0;
+    return min + Math.random() * (max - min);
+  }
 
-          return cv;
-        }
+  function makeGlowSprite(rgb) {
+    var s = 48, cv = document.createElement('canvas');
+    cv.width = cv.height = s;
+    var g = cv.getContext('2d');
+    var grad = g.createRadialGradient(s / 2, s / 2, 0, s / 2, s / 2, s / 2);
+    grad.addColorStop(0, 'rgba(255,255,255,1)');
+    grad.addColorStop(0.2, 'rgba(' + rgb[0] + ',' + rgb[1] + ',' + rgb[2] + ',0.95)');
+    grad.addColorStop(0.48, 'rgba(' + rgb[0] + ',' + rgb[1] + ',' + rgb[2] + ',0.28)');
+    grad.addColorStop(1, 'rgba(' + rgb[0] + ',' + rgb[1] + ',' + rgb[2] + ',0)');
+    g.fillStyle = grad;
+    g.fillRect(0, 0, s, s);
+    return cv;
+  }
 
-        function createGoldBall() {
-          var s = 76, cv = document.createElement('canvas');
-          cv.width = cv.height = s;
-          var g = cv.getContext('2d');
-          var cx = s / 2, cy = s / 2;
+  function buildOrnamentSprites() {
+    function createBear(furColor, earInner, blushColor) {
+      var s = 84, cv = document.createElement('canvas');
+      cv.width = cv.height = s;
+      var g = cv.getContext('2d');
+      var cx = s / 2, cy = s / 2 + 3;
 
-          var grad = g.createRadialGradient(cx - 7, cy - 7, 2, cx, cy, 22);
-          grad.addColorStop(0, '#fffbe6');
-          grad.addColorStop(0.4, '#f7cf68');
-          grad.addColorStop(0.85, '#c98d28');
-          grad.addColorStop(1, '#8c5a10');
-          g.fillStyle = grad;
-          g.beginPath();
-          g.arc(cx, cy, 20, 0, TAU);
-          g.fill();
+      g.fillStyle = furColor;
+      g.beginPath(); g.arc(cx - 18, cy - 17, 9.5, 0, TAU); g.fill();
+      g.beginPath(); g.arc(cx + 18, cy - 17, 9.5, 0, TAU); g.fill();
 
-          g.fillStyle = '#5c3808';
-          g.beginPath(); g.arc(cx - 5.5, cy - 2, 1.8, 0, TAU); g.fill();
-          g.beginPath(); g.arc(cx + 5.5, cy - 2, 1.8, 0, TAU); g.fill();
+      g.fillStyle = earInner;
+      g.beginPath(); g.arc(cx - 18, cy - 17, 5.2, 0, TAU); g.fill();
+      g.beginPath(); g.arc(cx + 18, cy - 17, 5.2, 0, TAU); g.fill();
 
-          g.strokeStyle = '#5c3808';
-          g.lineWidth = 1.6;
-          g.lineCap = 'round';
-          g.beginPath();
-          g.arc(cx, cy + 1.8, 5, 0.15 * Math.PI, 0.85 * Math.PI);
-          g.stroke();
+      var grad = g.createRadialGradient(cx - 7, cy - 8, 3, cx, cy, 26);
+      grad.addColorStop(0, '#ffffff');
+      grad.addColorStop(0.35, furColor);
+      grad.addColorStop(1, earInner);
+      g.fillStyle = grad;
+      g.beginPath();
+      g.ellipse(cx, cy, 24, 20, 0, 0, TAU);
+      g.fill();
 
-          return cv;
-        }
+      g.fillStyle = blushColor;
+      g.beginPath(); g.ellipse(cx - 13, cy + 3.5, 4.5, 2.6, 0, 0, TAU); g.fill();
+      g.beginPath(); g.ellipse(cx + 13, cy + 3.5, 4.5, 2.6, 0, 0, TAU); g.fill();
 
-        ornamentSprites.whiteBear = createBear('#fff5f8', '#e6c5d2', 'rgba(255, 130, 165, 0.45)');
-        ornamentSprites.brownBear = createBear('#c98e63', '#8c5832', 'rgba(255, 110, 140, 0.4)');
-        ornamentSprites.goldBall = createGoldBall();
-      }
+      g.fillStyle = '#2b1820';
+      g.beginPath(); g.arc(cx - 8, cy - 2, 2.3, 0, TAU); g.fill();
+      g.beginPath(); g.arc(cx + 8, cy - 2, 2.3, 0, TAU); g.fill();
 
-      function buildScene() {
-        needles = [];
-        lightStrings = [];
-        ornaments = [];
+      g.fillStyle = '#fff';
+      g.beginPath(); g.arc(cx - 8.7, cy - 2.8, 0.8, 0, TAU); g.fill();
+      g.beginPath(); g.arc(cx + 7.3, cy - 2.8, 0.8, 0, TAU); g.fill();
 
-        // 1. 移动端优化松针密度（适当加粗线条补偿密度，视觉同样饱满且安卓极速）
-        var layers = isMobile ? 21 : 26;
-        for (var l = 0; l < layers; l++) {
-          var t = l / (layers - 1);
-          var baseY = -8.4 + t * 14.8;
-          var maxR = 6.7 * Math.pow(1 - t, 0.82) + 0.25;
-          var branchBase = isMobile ? 20 : 28;
-          var branchCount = Math.floor(branchBase * (1 - t * 0.65)) + 7;
+      g.fillStyle = '#3d222c';
+      g.beginPath(); g.ellipse(cx, cy + 2.5, 2.8, 2, 0, 0, TAU); g.fill();
+      g.strokeStyle = '#3d222c';
+      g.lineWidth = 1.5;
+      g.lineCap = 'round';
+      g.beginPath();
+      g.arc(cx - 2.2, cy + 4.8, 2.2, 0.1 * Math.PI, 0.9 * Math.PI);
+      g.stroke();
+      g.beginPath();
+      g.arc(cx + 2.2, cy + 4.8, 2.2, 0.1 * Math.PI, 0.9 * Math.PI);
+      g.stroke();
 
-          for (var b = 0; b < branchCount; b++) {
-            var bAng = (b / branchCount) * TAU + l * 0.45 + rand(0.18, -0.18);
-            var needleBase = isMobile ? 9 : 14;
-            var subNeedles = Math.floor(needleBase * (1 - t * 0.5)) + 4;
-            for (var n = 0; n < subNeedles; n++) {
-              var rt = n / subNeedles;
-              var r = maxR * (0.18 + 0.82 * rt);
-              var droop = -rt * rt * 0.55 + rand(0.15, -0.15);
-              var spread = rand(0.28, -0.28);
-              var ang = bAng + spread;
-              needles.push({
-                x: Math.cos(ang) * r,
-                y: baseY + droop,
-                z: Math.sin(ang) * r,
-                dx: Math.cos(ang + rand(0.5, -0.5)) * rand(0.58, 0.28),
-                dy: rand(-0.1, -0.45),
-                dz: Math.sin(ang + rand(0.5, -0.5)) * rand(0.58, 0.28),
-                hue: Math.round(rand(345, 325)),
-                light: Math.round(rand(42, 22) + t * 14),
-                alpha: Number(rand(0.68, 0.35).toFixed(2))
-              });
-            }
-          }
-        }
+      return cv;
+    }
 
-        // 2. 螺旋灯带
-        var totalLights = isMobile ? 950 : 1500;
-        var strands = 2;
-        var turns = 7.5;
-        for (var i = 0; i < totalLights; i++) {
-          var st = i % strands;
-          var t = Math.floor(i / strands) / (totalLights / strands);
-          var radius = (6.8 * Math.pow(1 - t, 0.82) + 0.35) * 1.03;
-          var ang = t * turns * TAU + st * Math.PI + rand(0.08, -0.08);
-          lightStrings.push({
-            x: Math.cos(ang) * radius,
-            y: -8.3 + t * 14.7 + rand(0.12, -0.12),
-            z: Math.sin(ang) * radius,
-            t: t,
-            c: Math.floor(Math.random() * 3),
-            size: isMobile ? rand(0.48, 0.24) : rand(0.42, 0.18),
-            phase: rand(TAU)
-          });
-        }
+    function createGoldBall() {
+      var s = 76, cv = document.createElement('canvas');
+      cv.width = cv.height = s;
+      var g = cv.getContext('2d');
+      var cx = s / 2, cy = s / 2;
 
-        // 3. 树上小熊与微笑金球挂件
-        var types = ['whiteBear', 'brownBear', 'goldBall', 'whiteBear', 'brownBear'];
-        var ornCount = isMobile ? 38 : 46;
-        var goldenAngle = Math.PI * (3 - Math.sqrt(5));
-        for (var k = 0; k < ornCount; k++) {
-          var t = 0.08 + (k / ornCount) * 0.84;
-          var radius = (6.75 * Math.pow(1 - t, 0.82) + 0.35) * 1.04;
-          var ang = k * goldenAngle + rand(0.15, -0.15);
-          var type = types[k % types.length];
-          ornaments.push({
-            x: Math.cos(ang) * radius,
-            y: -8.3 + t * 14.7,
-            z: Math.sin(ang) * radius,
-            type: type,
-            scale: type === 'goldBall' ? rand(0.95, 0.78) : rand(1.15, 0.92),
-            swayPhase: rand(TAU)
-          });
-        }
+      var grad = g.createRadialGradient(cx - 7, cy - 7, 2, cx, cy, 22);
+      grad.addColorStop(0, '#fffbe6');
+      grad.addColorStop(0.4, '#f7cf68');
+      grad.addColorStop(0.85, '#c98d28');
+      grad.addColorStop(1, '#8c5a10');
+      g.fillStyle = grad;
+      g.beginPath();
+      g.arc(cx, cy, 20, 0, TAU);
+      g.fill();
 
-        // 4. 环绕上升精灵流光
-        magicSpirits = [];
-        var spiritCount = isMobile ? 16 : 26;
-        for (var sp = 0; sp < spiritCount; sp++) {
-          magicSpirits.push({
-            t: Math.random(),
-            speed: rand(0.14, 0.07),
-            angleOffset: rand(TAU),
-            turns: rand(4.5, 2.8),
-            size: rand(0.55, 0.3),
-            colorIdx: sp % 3,
-            history: []
-          });
-        }
+      g.fillStyle = '#5c3808';
+      g.beginPath(); g.arc(cx - 5.5, cy - 2, 1.8, 0, TAU); g.fill();
+      g.beginPath(); g.arc(cx + 5.5, cy - 2, 1.8, 0, TAU); g.fill();
 
-        // 5. 六角雪花
-        snowFlakes = [];
-        var snowCount = isMobile ? 22 : 34;
-        for (var s = 0; s < snowCount; s++) {
-          snowFlakes.push({
-            x: rand(W),
-            y: rand(H),
-            r: rand(10.5, 4.5),
-            speed: rand(0.55, 0.2),
-            drift: rand(TAU),
-            rot: rand(TAU),
-            rotSpd: rand(0.015, -0.015),
-            alpha: rand(0.45, 0.16)
-          });
-        }
+      g.strokeStyle = '#5c3808';
+      g.lineWidth = 1.6;
+      g.lineCap = 'round';
+      g.beginPath();
+      g.arc(cx, cy + 1.8, 5, 0.15 * Math.PI, 0.85 * Math.PI);
+      g.stroke();
 
-        // 6. 细碎星尘与背景光斑
-        dustParticles = [];
-        var dustCount = isMobile ? 85 : 130;
-        for (var d = 0; d < dustCount; d++) {
-          dustParticles.push({
-            x: rand(W),
-            y: rand(H),
-            size: Math.random() < 0.25 ? rand(3.5, 2.2) : rand(2, 1),
-            alpha: rand(0.75, 0.18),
-            twinkle: rand(TAU),
-            spd: rand(0.25, 0.05)
-          });
-        }
+      return cv;
+    }
 
-        bokehSpots = [];
-        for (var bk = 0; bk < 12; bk++) {
-          bokehSpots.push({
-            x: rand(W),
-            y: rand(H * 0.75),
-            r: rand(45, 16),
-            alpha: rand(0.11, 0.03)
+    ornamentSprites.whiteBear = createBear('#fff5f8', '#e6c5d2', 'rgba(255, 130, 165, 0.45)');
+    ornamentSprites.brownBear = createBear('#c98e63', '#8c5832', 'rgba(255, 110, 140, 0.4)');
+    ornamentSprites.goldBall = createGoldBall();
+  }
+
+  function buildScene() {
+    needles = [];
+    lightStrings = [];
+    ornaments = [];
+
+    var layers = isMobile ? 21 : 26;
+    for (var l = 0; l < layers; l++) {
+      var t = l / (layers - 1);
+      var baseY = -8.4 + t * 14.8;
+      var maxR = 6.7 * Math.pow(1 - t, 0.82) + 0.25;
+      var branchBase = isMobile ? 20 : 28;
+      var branchCount = Math.floor(branchBase * (1 - t * 0.65)) + 7;
+
+      for (var b = 0; b < branchCount; b++) {
+        var bAng = (b / branchCount) * TAU + l * 0.45 + rand(0.18, -0.18);
+        var needleBase = isMobile ? 9 : 14;
+        var subNeedles = Math.floor(needleBase * (1 - t * 0.5)) + 4;
+        for (var n = 0; n < subNeedles; n++) {
+          var rt = n / subNeedles;
+          var r = maxR * (0.18 + 0.82 * rt);
+          var droop = -rt * rt * 0.55 + rand(0.15, -0.15);
+          var spread = rand(0.28, -0.28);
+          var ang = bAng + spread;
+          needles.push({
+            x: Math.cos(ang) * r,
+            y: baseY + droop,
+            z: Math.sin(ang) * r,
+            dx: Math.cos(ang + rand(0.5, -0.5)) * rand(0.58, 0.28),
+            dy: rand(-0.1, -0.45),
+            dz: Math.sin(ang + rand(0.5, -0.5)) * rand(0.58, 0.28),
+            hue: Math.round(rand(345, 325)),
+            light: Math.round(rand(42, 22) + t * 14),
+            alpha: Number(rand(0.68, 0.35).toFixed(2))
           });
         }
       }
+    }
 
-      function resize() {
-        W = window.innerWidth;
-        H = window.innerHeight;
-        // 安卓高分屏限制最大 dpr 为 1.5，大幅降低 GPU 像素填充压力，画面依然清晰
-        var rawDpr = window.devicePixelRatio || 1;
-        dpr = isMobile ? Math.min(rawDpr, 1.5) : Math.min(rawDpr, 2);
-        canvas.width = Math.floor(W * dpr);
-        canvas.height = Math.floor(H * dpr);
-        ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
-        focal = Math.max(660, H * 1.16);
-        buildScene();
+    var totalLights = isMobile ? 950 : 1500;
+    var strands = 2;
+    var turns = 7.5;
+    for (var i = 0; i < totalLights; i++) {
+      var st = i % strands;
+      var t = Math.floor(i / strands) / (totalLights / strands);
+      var radius = (6.8 * Math.pow(1 - t, 0.82) + 0.35) * 1.03;
+      var ang = t * turns * TAU + st * Math.PI + rand(0.08, -0.08);
+      lightStrings.push({
+        x: Math.cos(ang) * radius,
+        y: -8.3 + t * 14.7 + rand(0.12, -0.12),
+        z: Math.sin(ang) * radius,
+        t: t,
+        c: Math.floor(Math.random() * 3),
+        size: isMobile ? rand(0.48, 0.24) : rand(0.42, 0.18),
+        phase: rand(TAU)
+      });
+    }
+
+    var types = ['whiteBear', 'brownBear', 'goldBall', 'whiteBear', 'brownBear'];
+    var ornCount = isMobile ? 38 : 46;
+    var goldenAngle = Math.PI * (3 - Math.sqrt(5));
+    for (var k = 0; k < ornCount; k++) {
+      var t = 0.08 + (k / ornCount) * 0.84;
+      var radius = (6.75 * Math.pow(1 - t, 0.82) + 0.35) * 1.04;
+      var ang = k * goldenAngle + rand(0.15, -0.15);
+      var type = types[k % types.length];
+      ornaments.push({
+        x: Math.cos(ang) * radius,
+        y: -8.3 + t * 14.7,
+        z: Math.sin(ang) * radius,
+        type: type,
+        scale: type === 'goldBall' ? rand(0.95, 0.78) : rand(1.15, 0.92),
+        swayPhase: rand(TAU)
+      });
+    }
+
+    magicSpirits = [];
+    var spiritCount = isMobile ? 16 : 26;
+    for (var sp = 0; sp < spiritCount; sp++) {
+      magicSpirits.push({
+        t: Math.random(),
+        speed: rand(0.14, 0.07),
+        angleOffset: rand(TAU),
+        turns: rand(4.5, 2.8),
+        size: rand(0.55, 0.3),
+        colorIdx: sp % 3,
+        history: []
+      });
+    }
+
+    snowFlakes = [];
+    var snowCount = isMobile ? 22 : 34;
+    for (var s = 0; s < snowCount; s++) {
+      snowFlakes.push({
+        x: rand(W),
+        y: rand(H),
+        r: rand(10.5, 4.5),
+        speed: rand(0.55, 0.2),
+        drift: rand(TAU),
+        rot: rand(TAU),
+        rotSpd: rand(0.015, -0.015),
+        alpha: rand(0.45, 0.16)
+      });
+    }
+
+    dustParticles = [];
+    var dustCount = isMobile ? 85 : 130;
+    for (var d = 0; d < dustCount; d++) {
+      dustParticles.push({
+        x: rand(W),
+        y: rand(H),
+        size: Math.random() < 0.25 ? rand(3.5, 2.2) : rand(2, 1),
+        alpha: rand(0.75, 0.18),
+        twinkle: rand(TAU),
+        spd: rand(0.25, 0.05)
+      });
+    }
+
+    bokehSpots = [];
+    for (var bk = 0; bk < 12; bk++) {
+      bokehSpots.push({
+        x: rand(W),
+        y: rand(H * 0.75),
+        r: rand(45, 16),
+        alpha: rand(0.11, 0.03)
+      });
+    }
+  }
+
+  function resize() {
+    W = window.innerWidth;
+    H = window.innerHeight;
+    var rawDpr = window.devicePixelRatio || 1;
+    dpr = isMobile ? Math.min(rawDpr, 1.5) : Math.min(rawDpr, 2);
+    canvas.width = Math.floor(W * dpr);
+    canvas.height = Math.floor(H * dpr);
+    ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
+    focal = Math.max(660, H * 1.16);
+    buildScene();
+  }
+
+  function project(x, y, z, angle) {
+    var ca = Math.cos(angle), sa = Math.sin(angle);
+    var xr = x * ca - z * sa;
+    var zr = x * sa + z * ca;
+    var scale = focal / (CAM_D - zr);
+    return {
+      x: W / 2 + xr * scale,
+      y: H * 0.50 - (y - CAM_Y) * scale,
+      scale: scale,
+      z: zr
+    };
+  }
+
+  function launchFirework(targetX, targetY, scale) {
+    if (targetX === undefined) targetX = rand(W * 0.85, W * 0.15);
+    if (targetY === undefined) targetY = rand(H * 0.36, H * 0.12);
+    if (scale === undefined) scale = rand(1.1, 0.75);
+
+    fireworkRockets.push({
+      x: targetX + rand(45, -45),
+      y: H * 0.84,
+      tx: targetX,
+      ty: targetY,
+      speed: rand(680, 520),
+      scale: scale,
+      palette: FIREWORK_PALETTES[Math.floor(Math.random() * FIREWORK_PALETTES.length)],
+      trail: []
+    });
+  }
+
+  function explodeFirework(x, y, palette, scale) {
+    var baseCount = isMobile ? 42 : 64;
+    var count = Math.floor(baseCount * scale);
+
+    fireworkParticles.push({
+      x: x, y: y, vx: 0, vy: 0,
+      alpha: 1, decay: 3.6,
+      size: 38 * scale,
+      color: '255, 245, 250',
+      isFlash: true
+    });
+
+    for (var i = 0; i < count; i++) {
+      var ang = (i / count) * TAU + rand(0.08, -0.08);
+      var speedBase = (i % 3 === 0 ? rand(165, 125) : rand(250, 175)) * scale;
+      var col = palette[i % palette.length];
+      fireworkParticles.push({
+        x: x,
+        y: y,
+        vx: Math.cos(ang) * speedBase,
+        vy: Math.sin(ang) * speedBase,
+        alpha: 1,
+        decay: rand(1.2, 0.75),
+        size: rand(3.0, 1.5) * scale,
+        color: col,
+        twinkle: rand(TAU),
+        history: []
+      });
+    }
+  }
+
+  function spawnBurstParticles(x, y, count) {
+    var realCount = isMobile ? Math.min(count, 24) : count;
+    for (var i = 0; i < realCount; i++) {
+      var ang = rand(TAU);
+      var spd = rand(200, 60);
+      trailParticles.push({
+        x: x,
+        y: y,
+        vx: Math.cos(ang) * spd,
+        vy: Math.sin(ang) * spd - 60,
+        alpha: 1,
+        decay: rand(1.4, 0.8),
+        size: rand(4.2, 2),
+        color: i % 2 === 0 ? '255, 195, 225' : '255, 235, 175',
+        gravity: 160
+      });
+    }
+  }
+
+  function spawnPointerTrail(x, y) {
+    trailParticles.push({
+      x: x + rand(5, -5),
+      y: y + rand(5, -5),
+      vx: rand(24, -24),
+      vy: rand(24, -24),
+      alpha: 0.9,
+      decay: rand(2.2, 1.5),
+      size: rand(3.0, 1.5),
+      color: Math.random() < 0.6 ? '255, 185, 220' : '255, 240, 195',
+      gravity: 25
+    });
+  }
+
+  function updateAndDrawFireworks(time, dt) {
+    ctx.save();
+    ctx.globalCompositeOperation = 'lighter';
+
+    nextAutoFirework -= dt;
+    if (nextAutoFirework <= 0) {
+      var fx = Math.random() < 0.5 ? rand(W * 0.34, W * 0.12) : rand(W * 0.88, W * 0.66);
+      var fy = rand(H * 0.35, H * 0.14);
+      launchFirework(fx, fy, rand(0.95, 0.68));
+      nextAutoFirework = rand(4.5, 2.5);
+    }
+
+    for (var i = fireworkRockets.length - 1; i >= 0; i--) {
+      var r = fireworkRockets[i];
+      var dx = r.tx - r.x;
+      var dy = r.ty - r.y;
+      var dist = Math.hypot(dx, dy);
+
+      r.trail.push({ x: r.x, y: r.y });
+      if (r.trail.length > 6) r.trail.shift();
+
+      if (dist < r.speed * dt + 8) {
+        explodeFirework(r.tx, r.ty, r.palette, r.scale);
+        fireworkRockets.splice(i, 1);
+        continue;
       }
 
-      function project(x, y, z, angle) {
-        var ca = Math.cos(angle), sa = Math.sin(angle);
-        var xr = x * ca - z * sa;
-        var zr = x * sa + z * ca;
-        var scale = focal / (CAM_D - zr);
-        return {
-          x: W / 2 + xr * scale,
-          y: H * 0.50 - (y - CAM_Y) * scale,
-          scale: scale,
-          z: zr
-        };
-      }
+      r.x += (dx / dist) * r.speed * dt;
+      r.y += (dy / dist) * r.speed * dt;
 
-      // ================= 烟花与粒子系统 =================
-
-      function launchFirework(targetX, targetY, scale) {
-        if (targetX === undefined) targetX = rand(W * 0.85, W * 0.15);
-        if (targetY === undefined) targetY = rand(H * 0.36, H * 0.12);
-        if (scale === undefined) scale = rand(1.1, 0.75);
-
-        fireworkRockets.push({
-          x: targetX + rand(45, -45),
-          y: H * 0.84,
-          tx: targetX,
-          ty: targetY,
-          speed: rand(680, 520),
-          scale: scale,
-          palette: FIREWORK_PALETTES[Math.floor(Math.random() * FIREWORK_PALETTES.length)],
-          trail: []
-        });
-      }
-
-      function explodeFirework(x, y, palette, scale) {
-        var baseCount = isMobile ? 42 : 64;
-        var count = Math.floor(baseCount * scale);
-
-        fireworkParticles.push({
-          x: x, y: y, vx: 0, vy: 0,
-          alpha: 1, decay: 3.6,
-          size: 38 * scale,
-          color: '255, 245, 250',
-          isFlash: true
-        });
-
-        for (var i = 0; i < count; i++) {
-          var ang = (i / count) * TAU + rand(0.08, -0.08);
-          var speedBase = (i % 3 === 0 ? rand(165, 125) : rand(250, 175)) * scale;
-          var col = palette[i % palette.length];
-          fireworkParticles.push({
-            x: x,
-            y: y,
-            vx: Math.cos(ang) * speedBase,
-            vy: Math.sin(ang) * speedBase,
-            alpha: 1,
-            decay: rand(1.2, 0.75),
-            size: rand(3.0, 1.5) * scale,
-            color: col,
-            twinkle: rand(TAU),
-            history: []
-          });
-        }
-      }
-
-      function spawnBurstParticles(x, y, count) {
-        var realCount = isMobile ? Math.min(count, 24) : count;
-        for (var i = 0; i < realCount; i++) {
-          var ang = rand(TAU);
-          var spd = rand(200, 60);
-          trailParticles.push({
-            x: x,
-            y: y,
-            vx: Math.cos(ang) * spd,
-            vy: Math.sin(ang) * spd - 60,
-            alpha: 1,
-            decay: rand(1.4, 0.8),
-            size: rand(4.2, 2),
-            color: i % 2 === 0 ? '255, 195, 225' : '255, 235, 175',
-            gravity: 160
-          });
-        }
-      }
-
-      function spawnPointerTrail(x, y) {
-        trailParticles.push({
-          x: x + rand(5, -5),
-          y: y + rand(5, -5),
-          vx: rand(24, -24),
-          vy: rand(24, -24),
-          alpha: 0.9,
-          decay: rand(2.2, 1.5),
-          size: rand(3.0, 1.5),
-          color: Math.random() < 0.6 ? '255, 185, 220' : '255, 240, 195',
-          gravity: 25
-        });
-      }
-
-      function updateAndDrawFireworks(time, dt) {
-        ctx.save();
-        ctx.globalCompositeOperation = 'lighter';
-
-        nextAutoFirework -= dt;
-        if (nextAutoFirework <= 0) {
-          var fx = Math.random() < 0.5 ? rand(W * 0.34, W * 0.12) : rand(W * 0.88, W * 0.66);
-          var fy = rand(H * 0.35, H * 0.14);
-          launchFirework(fx, fy, rand(0.95, 0.68));
-          nextAutoFirework = rand(4.5, 2.5);
-        }
-
-        for (var i = fireworkRockets.length - 1; i >= 0; i--) {
-          var r = fireworkRockets[i];
-          var dx = r.tx - r.x;
-          var dy = r.ty - r.y;
-          var dist = Math.hypot(dx, dy);
-
-          r.trail.push({ x: r.x, y: r.y });
-          if (r.trail.length > 6) r.trail.shift();
-
-          if (dist < r.speed * dt + 8) {
-            explodeFirework(r.tx, r.ty, r.palette, r.scale);
-            fireworkRockets.splice(i, 1);
-            continue;
-          }
-
-          r.x += (dx / dist) * r.speed * dt;
-          r.y += (dy / dist) * r.speed * dt;
-
-          for (var t = 0; t < r.trail.length; t++) {
-            var tp = r.trail[t];
-            var ratio = (t + 1) / r.trail.length;
-            ctx.fillStyle = 'rgba(255, 225, 240,' + (ratio * 0.55) + ')';
-            ctx.beginPath();
-            ctx.arc(tp.x, tp.y, ratio * 2.2, 0, TAU);
-            ctx.fill();
-          }
-        }
-
-        for (var j = fireworkParticles.length - 1; j >= 0; j--) {
-          var p = fireworkParticles[j];
-          p.alpha -= p.decay * dt;
-          if (p.alpha <= 0) {
-            fireworkParticles.splice(j, 1);
-            continue;
-          }
-
-          if (p.isFlash) {
-            var fg = ctx.createRadialGradient(p.x, p.y, 0, p.x, p.y, p.size);
-            fg.addColorStop(0, 'rgba(' + p.color + ',' + (p.alpha * 0.85) + ')');
-            fg.addColorStop(1, 'rgba(' + p.color + ', 0)');
-            ctx.fillStyle = fg;
-            ctx.beginPath();
-            ctx.arc(p.x, p.y, p.size, 0, TAU);
-            ctx.fill();
-            continue;
-          }
-
-          p.history.push({ x: p.x, y: p.y });
-          if (p.history.length > 4) p.history.shift();
-
-          p.vx *= Math.pow(0.16, dt);
-          p.vy *= Math.pow(0.16, dt);
-          p.vy += 68 * dt;
-          p.x += p.vx * dt;
-          p.y += p.vy * dt;
-
-          var flick = p.alpha < 0.45 ? (0.4 + 0.6 * Math.sin(time * 28 + p.twinkle)) : 1;
-          var curAlpha = Math.max(0, p.alpha * flick);
-
-          if (p.history.length > 1) {
-            ctx.strokeStyle = 'rgba(' + p.color + ',' + (curAlpha * 0.55) + ')';
-            ctx.lineWidth = p.size * 0.85;
-            ctx.lineCap = 'round';
-            ctx.beginPath();
-            ctx.moveTo(p.history[0].x, p.history[0].y);
-            for (var h = 1; h < p.history.length; h++) {
-              ctx.lineTo(p.history[h].x, p.history[h].y);
-            }
-            ctx.lineTo(p.x, p.y);
-            ctx.stroke();
-          }
-
-          ctx.fillStyle = 'rgba(255, 255, 255,' + curAlpha + ')';
-          ctx.beginPath();
-          ctx.arc(p.x, p.y, p.size * 0.55, 0, TAU);
-          ctx.fill();
-        }
-
-        for (var k = trailParticles.length - 1; k >= 0; k--) {
-          var tp = trailParticles[k];
-          tp.alpha -= tp.decay * dt;
-          if (tp.alpha <= 0) {
-            trailParticles.splice(k, 1);
-            continue;
-          }
-          tp.vy += tp.gravity * dt;
-          tp.x += tp.vx * dt;
-          tp.y += tp.vy * dt;
-
-          ctx.fillStyle = 'rgba(' + tp.color + ',' + tp.alpha + ')';
-          ctx.beginPath();
-          ctx.arc(tp.x, tp.y, tp.size, 0, TAU);
-          ctx.fill();
-        }
-
-        ctx.restore();
-      }
-
-      function drawMagicSpirits(dt, angle) {
-        ctx.save();
-        ctx.globalCompositeOperation = 'lighter';
-        for (var i = 0; i < magicSpirits.length; i++) {
-          var sp = magicSpirits[i];
-          sp.t += sp.speed * dt;
-          if (sp.t > 1) {
-            sp.t -= 1;
-            sp.history = [];
-          }
-          var r = (6.9 * Math.pow(1 - sp.t, 0.82) + 0.35) * 1.07;
-          var a = sp.angleOffset + sp.t * sp.turns * TAU;
-          var y = -8.4 + sp.t * 15.2;
-          var p = project(Math.cos(a) * r, y, Math.sin(a) * r, angle);
-
-          sp.history.push({ x: p.x, y: p.y });
-          if (sp.history.length > 5) sp.history.shift();
-
-          var edgeFade = Math.sin(sp.t * Math.PI);
-          if (sp.history.length > 1) {
-            ctx.strokeStyle = 'rgba(255, 210, 235,' + (0.28 * edgeFade) + ')';
-            ctx.lineWidth = sp.size * p.scale * 0.1;
-            ctx.beginPath();
-            ctx.moveTo(sp.history[0].x, sp.history[0].y);
-            for (var h = 1; h < sp.history.length; h++) {
-              ctx.lineTo(sp.history[h].x, sp.history[h].y);
-            }
-            ctx.stroke();
-          }
-
-          var sz = sp.size * p.scale * 0.9;
-          ctx.globalAlpha = 0.85 * edgeFade;
-          ctx.drawImage(glowSprites[sp.colorIdx], p.x - sz / 2, p.y - sz / 2, sz, sz);
-        }
-        ctx.restore();
-      }
-
-      function drawBackground(time, dt) {
-        ctx.globalCompositeOperation = 'source-over';
-        ctx.globalAlpha = 1;
-        var g = ctx.createRadialGradient(W * 0.5, H * 0.44, 0, W * 0.5, H * 0.48, Math.max(W, H) * 0.8);
-        g.addColorStop(0, '#2c1127');
-        g.addColorStop(0.45, '#170816');
-        g.addColorStop(1, '#090309');
-        ctx.fillStyle = g;
-        ctx.fillRect(0, 0, W, H);
-
-        ctx.globalCompositeOperation = 'lighter';
-        for (var i = 0; i < bokehSpots.length; i++) {
-          var b = bokehSpots[i];
-          var bg = ctx.createRadialGradient(b.x, b.y, 0, b.x, b.y, b.r);
-          bg.addColorStop(0, 'rgba(255, 190, 225,' + b.alpha + ')');
-          bg.addColorStop(1, 'rgba(255, 190, 225, 0)');
-          ctx.fillStyle = bg;
-          ctx.beginPath();
-          ctx.arc(b.x, b.y, b.r, 0, TAU);
-          ctx.fill();
-        }
-
-        for (var j = 0; j < dustParticles.length; j++) {
-          var p = dustParticles[j];
-          p.y -= p.spd * dt * 30;
-          if (p.y < -10) { p.y = H + 10; p.x = rand(W); }
-          var a = p.alpha * (0.6 + 0.4 * Math.sin(time * 2.2 + p.twinkle));
-          ctx.fillStyle = 'rgba(255, 235, 245,' + a + ')';
-          ctx.fillRect(p.x, p.y, p.size, p.size);
-        }
-      }
-
-      function drawGroundGlow() {
-        var p = project(0, -9.2, 0, 0);
-        ctx.save();
-        ctx.globalCompositeOperation = 'lighter';
-        ctx.translate(W / 2, p.y);
-        ctx.scale(1, 0.22);
-        var R = focal * 0.42;
-        var g = ctx.createRadialGradient(0, 0, 0, 0, 0, R);
-        g.addColorStop(0, 'rgba(235, 130, 185, 0.26)');
-        g.addColorStop(0.5, 'rgba(180, 70, 130, 0.1)');
-        g.addColorStop(1, 'rgba(120, 30, 80, 0)');
-        ctx.fillStyle = g;
+      for (var t = 0; t < r.trail.length; t++) {
+        var tp = r.trail[t];
+        var ratio = (t + 1) / r.trail.length;
+        ctx.fillStyle = 'rgba(255, 225, 240,' + (ratio * 0.55) + ')';
         ctx.beginPath();
-        ctx.arc(0, 0, R, 0, TAU);
+        ctx.arc(tp.x, tp.y, ratio * 2.2, 0, TAU);
         ctx.fill();
-        ctx.restore();
+      }
+    }
+
+    for (var j = fireworkParticles.length - 1; j >= 0; j--) {
+      var p = fireworkParticles[j];
+      p.alpha -= p.decay * dt;
+      if (p.alpha <= 0) {
+        fireworkParticles.splice(j, 1);
+        continue;
       }
 
-      function drawTreeAndOrnaments(time, angle) {
-        ctx.globalCompositeOperation = 'source-over';
+      if (p.isFlash) {
+        var fg = ctx.createRadialGradient(p.x, p.y, 0, p.x, p.y, p.size);
+        fg.addColorStop(0, 'rgba(' + p.color + ',' + (p.alpha * 0.85) + ')');
+        fg.addColorStop(1, 'rgba(' + p.color + ', 0)');
+        ctx.fillStyle = fg;
+        ctx.beginPath();
+        ctx.arc(p.x, p.y, p.size, 0, TAU);
+        ctx.fill();
+        continue;
+      }
+
+      p.history.push({ x: p.x, y: p.y });
+      if (p.history.length > 4) p.history.shift();
+
+      p.vx *= Math.pow(0.16, dt);
+      p.vy *= Math.pow(0.16, dt);
+      p.vy += 68 * dt;
+      p.x += p.vx * dt;
+      p.y += p.vy * dt;
+
+      var flick = p.alpha < 0.45 ? (0.4 + 0.6 * Math.sin(time * 28 + p.twinkle)) : 1;
+      var curAlpha = Math.max(0, p.alpha * flick);
+
+      if (p.history.length > 1) {
+        ctx.strokeStyle = 'rgba(' + p.color + ',' + (curAlpha * 0.55) + ')';
+        ctx.lineWidth = p.size * 0.85;
         ctx.lineCap = 'round';
-        var widthMult = isMobile ? 0.088 : 0.065;
-        for (var i = 0; i < needles.length; i++) {
-          var n = needles[i];
-          var p1 = project(n.x, n.y, n.z, angle);
-          var p2 = project(n.x + n.dx, n.y + n.dy, n.z + n.dz, angle);
-          var depthFactor = Math.max(0.25, Math.min(1, (p1.z + 7) / 14));
-          var light = Math.round(n.light * (0.65 + 0.45 * depthFactor));
-          ctx.strokeStyle = 'hsla(' + n.hue + ',58%,' + light + '%,' + (n.alpha * depthFactor).toFixed(2) + ')';
-          ctx.lineWidth = Math.max(1.3, p1.scale * widthMult);
-          ctx.beginPath();
-          ctx.moveTo(p1.x, p1.y);
-          ctx.lineTo(p2.x, p2.y);
-          ctx.stroke();
-        }
-
-        ctx.globalCompositeOperation = 'lighter';
-        for (var j = 0; j < lightStrings.length; j++) {
-          var ls = lightStrings[j];
-          var p = project(ls.x, ls.y, ls.z, angle);
-          var depth = Math.max(0.2, Math.min(1, (p.z + 7.5) / 14));
-          var twinkle = 0.65 + 0.35 * Math.sin(time * 3.2 + ls.phase);
-          var wave = Math.pow(0.5 + 0.5 * Math.sin(time * 2.5 - ls.t * 18), 2);
-          var sz = ls.size * p.scale * (0.9 + 0.35 * twinkle + 0.25 * wave);
-          ctx.globalAlpha = Math.min(1, (0.35 + 0.45 * twinkle + 0.3 * wave) * depth);
-          ctx.drawImage(glowSprites[ls.c], p.x - sz / 2, p.y - sz / 2, sz, sz);
-        }
-
-        var projectedOrns = [];
-        for (var k = 0; k < ornaments.length; k++) {
-          var o = ornaments[k];
-          var po = project(o.x, o.y, o.z, angle);
-          projectedOrns.push({ x: po.x, y: po.y, z: po.z, scale: po.scale, item: o });
-        }
-        projectedOrns.sort(function (a, b) { return a.z - b.z; });
-
-        ctx.globalCompositeOperation = 'source-over';
-        for (var m = 0; m < projectedOrns.length; m++) {
-          var po = projectedOrns[m];
-          var item = po.item;
-          var sprite = ornamentSprites[item.type];
-          var depthAlpha = po.z < -1.5 ? 0.55 : 1;
-          var drawSize = po.scale * 1.15 * item.scale;
-          var sway = Math.sin(time * 2.2 + item.swayPhase) * 0.06;
-
-          ctx.save();
-          ctx.globalAlpha = depthAlpha;
-          ctx.translate(po.x, po.y);
-          ctx.rotate(sway);
-          ctx.drawImage(sprite, -drawSize / 2, -drawSize / 2, drawSize, drawSize);
-          ctx.restore();
-        }
-      }
-
-      function drawTopStar(time, angle) {
-        var p = project(0, 7.15, 0, angle);
-        starScreenPos.x = p.x;
-        starScreenPos.y = p.y;
-        starScreenPos.r = Math.max(46, focal * 0.068);
-
-        var pulse = 1 + 0.1 * Math.sin(time * 2.8) + starBurst * 0.55;
-        ctx.save();
-        ctx.translate(p.x, p.y);
-
-        ctx.globalCompositeOperation = 'lighter';
-        var glowR = focal * (0.14 + starBurst * 0.14);
-        var g = ctx.createRadialGradient(0, 0, 0, 0, 0, glowR);
-        g.addColorStop(0, 'rgba(255, 240, 248, 0.95)');
-        g.addColorStop(0.28, 'rgba(255, 175, 215, 0.45)');
-        g.addColorStop(1, 'rgba(255, 110, 180, 0)');
-        ctx.fillStyle = g;
         ctx.beginPath();
-        ctx.arc(0, 0, glowR, 0, TAU);
-        ctx.fill();
+        ctx.moveTo(p.history[0].x, p.history[0].y);
+        for (var h = 1; h < p.history.length; h++) {
+          ctx.lineTo(p.history[h].x, p.history[h].y);
+        }
+        ctx.lineTo(p.x, p.y);
+        ctx.stroke();
+      }
 
-        ctx.scale(pulse, pulse);
-        ctx.globalCompositeOperation = 'source-over';
-        var outerR = focal * 0.044;
-        var innerR = outerR * 0.44;
+      ctx.fillStyle = 'rgba(255, 255, 255,' + curAlpha + ')';
+      ctx.beginPath();
+      ctx.arc(p.x, p.y, p.size * 0.55, 0, TAU);
+      ctx.fill();
+    }
+
+    for (var k = trailParticles.length - 1; k >= 0; k--) {
+      var tp = trailParticles[k];
+      tp.alpha -= tp.decay * dt;
+      if (tp.alpha <= 0) {
+        trailParticles.splice(k, 1);
+        continue;
+      }
+      tp.vy += tp.gravity * dt;
+      tp.x += tp.vx * dt;
+      tp.y += tp.vy * dt;
+
+      ctx.fillStyle = 'rgba(' + tp.color + ',' + tp.alpha + ')';
+      ctx.beginPath();
+      ctx.arc(tp.x, tp.y, tp.size, 0, TAU);
+      ctx.fill();
+    }
+
+    ctx.restore();
+  }
+
+  function drawMagicSpirits(dt, angle) {
+    ctx.save();
+    ctx.globalCompositeOperation = 'lighter';
+    for (var i = 0; i < magicSpirits.length; i++) {
+      var sp = magicSpirits[i];
+      sp.t += sp.speed * dt;
+      if (sp.t > 1) {
+        sp.t -= 1;
+        sp.history = [];
+      }
+      var r = (6.9 * Math.pow(1 - sp.t, 0.82) + 0.35) * 1.07;
+      var a = sp.angleOffset + sp.t * sp.turns * TAU;
+      var y = -8.4 + sp.t * 15.2;
+      var p = project(Math.cos(a) * r, y, Math.sin(a) * r, angle);
+
+      sp.history.push({ x: p.x, y: p.y });
+      if (sp.history.length > 5) sp.history.shift();
+
+      var edgeFade = Math.sin(sp.t * Math.PI);
+      if (sp.history.length > 1) {
+        ctx.strokeStyle = 'rgba(255, 210, 235,' + (0.28 * edgeFade) + ')';
+        ctx.lineWidth = sp.size * p.scale * 0.1;
         ctx.beginPath();
-        for (var i = 0; i < 10; i++) {
-          var r = i % 2 === 0 ? outerR : innerR;
-          var a = i * Math.PI / 5 - Math.PI / 2;
-          var sx = Math.cos(a) * r;
-          var sy = Math.sin(a) * r;
-          if (i === 0) ctx.moveTo(sx, sy);
-          else ctx.lineTo(sx, sy);
+        ctx.moveTo(sp.history[0].x, sp.history[0].y);
+        for (var h = 1; h < sp.history.length; h++) {
+          ctx.lineTo(sp.history[h].x, sp.history[h].y);
         }
-        ctx.closePath();
-
-        var starGrad = ctx.createLinearGradient(-outerR, -outerR, outerR, outerR);
-        starGrad.addColorStop(0, '#ffffff');
-        starGrad.addColorStop(0.5, '#ffd6ea');
-        starGrad.addColorStop(1, '#e895be');
-        ctx.fillStyle = starGrad;
-        ctx.fill();
-        ctx.restore();
+        ctx.stroke();
       }
 
-      function drawGifts(time, angle) {
-        giftHitBoxes = [];
-        var projectedGifts = [];
+      var sz = sp.size * p.scale * 0.9;
+      ctx.globalAlpha = 0.85 * edgeFade;
+      ctx.drawImage(glowSprites[sp.colorIdx], p.x - sz / 2, p.y - sz / 2, sz, sz);
+    }
+    ctx.restore();
+  }
 
-        for (var i = 0; i < GIFT_DATA.length; i++) {
-          var gd = GIFT_DATA[i];
-          var effAng = gd.angle + Math.sin(angle * 0.5) * 0.22;
-          var gx = Math.sin(effAng) * gd.dist * 0.65;
-          var gz = Math.cos(effAng) * gd.dist * 0.55 + 2.5;
-          // 加入轻微悬浮呼吸律动，引导点击
-          var gy = -9.6 + Math.sin(time * 2.4 + i * 1.4) * 0.14;
-          var p = project(gx, gy, gz, 0);
-          projectedGifts.push({ p: p, data: gd, index: i });
-        }
+  function drawBackground(time, dt) {
+    ctx.globalCompositeOperation = 'source-over';
+    ctx.globalAlpha = 1;
+    var g = ctx.createRadialGradient(W * 0.5, H * 0.44, 0, W * 0.5, H * 0.48, Math.max(W, H) * 0.8);
+    g.addColorStop(0, '#2c1127');
+    g.addColorStop(0.45, '#170816');
+    g.addColorStop(1, '#090309');
+    ctx.fillStyle = g;
+    ctx.fillRect(0, 0, W, H);
 
-        projectedGifts.sort(function (a, b) { return a.p.z - b.p.z; });
+    ctx.globalCompositeOperation = 'lighter';
+    for (var i = 0; i < bokehSpots.length; i++) {
+      var b = bokehSpots[i];
+      var bg = ctx.createRadialGradient(b.x, b.y, 0, b.x, b.y, b.r);
+      bg.addColorStop(0, 'rgba(255, 190, 225,' + b.alpha + ')');
+      bg.addColorStop(1, 'rgba(255, 190, 225, 0)');
+      ctx.fillStyle = bg;
+      ctx.beginPath();
+      ctx.arc(b.x, b.y, b.r, 0, TAU);
+      ctx.fill();
+    }
 
-        ctx.globalCompositeOperation = 'source-over';
-        for (var j = 0; j < projectedGifts.length; j++) {
-          var item = projectedGifts[j];
-          var p = item.p;
-          var gd = item.data;
-          var bw = p.scale * 2.15;
-          var bh = bw * 0.86;
-          var lidH = bh * 0.24;
-          var x = p.x - bw / 2;
-          var y = p.y - bh / 2;
+    for (var j = 0; j < dustParticles.length; j++) {
+      var p = dustParticles[j];
+      p.y -= p.spd * dt * 30;
+      if (p.y < -10) { p.y = H + 10; p.x = rand(W); }
+      var a = p.alpha * (0.6 + 0.4 * Math.sin(time * 2.2 + p.twinkle));
+      ctx.fillStyle = 'rgba(255, 235, 245,' + a + ')';
+      ctx.fillRect(p.x, p.y, p.size, p.size);
+    }
+  }
 
-          // 扩大移动端触控热区，确保手指轻点 100% 命中
-          var pad = 16;
-          giftHitBoxes.push({
-            x: x - pad,
-            y: y - pad - 10,
-            w: bw + pad * 2,
-            h: bh + pad * 2 + 24,
-            cx: p.x,
-            cy: p.y,
-            data: gd
-          });
+  function drawGroundGlow() {
+    var p = project(0, -9.2, 0, 0);
+    ctx.save();
+    ctx.globalCompositeOperation = 'lighter';
+    ctx.translate(W / 2, p.y);
+    ctx.scale(1, 0.22);
+    var R = focal * 0.42;
+    var g = ctx.createRadialGradient(0, 0, 0, 0, 0, R);
+    g.addColorStop(0, 'rgba(235, 130, 185, 0.26)');
+    g.addColorStop(0.5, 'rgba(180, 70, 130, 0.1)');
+    g.addColorStop(1, 'rgba(120, 30, 80, 0)');
+    ctx.fillStyle = g;
+    ctx.beginPath();
+    ctx.arc(0, 0, R, 0, TAU);
+    ctx.fill();
+    ctx.restore();
+  }
 
-          ctx.save();
-          ctx.fillStyle = 'rgba(0, 0, 0, 0.45)';
-          ctx.beginPath();
-          ctx.ellipse(p.x, y + bh + 4, bw * 0.56, bh * 0.14, 0, 0, TAU);
-          ctx.fill();
+  function drawTreeAndOrnaments(time, angle) {
+    ctx.globalCompositeOperation = 'source-over';
+    ctx.lineCap = 'round';
+    var widthMult = isMobile ? 0.088 : 0.065;
+    for (var i = 0; i < needles.length; i++) {
+      var n = needles[i];
+      var p1 = project(n.x, n.y, n.z, angle);
+      var p2 = project(n.x + n.dx, n.y + n.dy, n.z + n.dz, angle);
+      var depthFactor = Math.max(0.25, Math.min(1, (p1.z + 7) / 14));
+      var light = Math.round(n.light * (0.65 + 0.45 * depthFactor));
+      ctx.strokeStyle = 'hsla(' + n.hue + ',58%,' + light + '%,' + (n.alpha * depthFactor).toFixed(2) + ')';
+      ctx.lineWidth = Math.max(1.3, p1.scale * widthMult);
+      ctx.beginPath();
+      ctx.moveTo(p1.x, p1.y);
+      ctx.lineTo(p2.x, p2.y);
+      ctx.stroke();
+    }
 
-          var bodyGrad = ctx.createLinearGradient(x, y, x + bw, y + bh);
-          bodyGrad.addColorStop(0, gd.lidColor);
-          bodyGrad.addColorStop(1, gd.boxColor);
-          ctx.fillStyle = bodyGrad;
-          ctx.fillRect(x + bw * 0.04, y + lidH, bw * 0.92, bh - lidH);
+    ctx.globalCompositeOperation = 'lighter';
+    for (var j = 0; j < lightStrings.length; j++) {
+      var ls = lightStrings[j];
+      var p = project(ls.x, ls.y, ls.z, angle);
+      var depth = Math.max(0.2, Math.min(1, (p.z + 7.5) / 14));
+      var twinkle = 0.65 + 0.35 * Math.sin(time * 3.2 + ls.phase);
+      var wave = Math.pow(0.5 + 0.5 * Math.sin(time * 2.5 - ls.t * 18), 2);
+      var sz = ls.size * p.scale * (0.9 + 0.35 * twinkle + 0.25 * wave);
+      ctx.globalAlpha = Math.min(1, (0.35 + 0.45 * twinkle + 0.3 * wave) * depth);
+      ctx.drawImage(glowSprites[ls.c], p.x - sz / 2, p.y - sz / 2, sz, sz);
+    }
 
-          ctx.fillStyle = 'rgba(0,0,0,0.22)';
-          ctx.fillRect(x + bw * 0.04, y + lidH, bw * 0.92, 4);
+    var projectedOrns = [];
+    for (var k = 0; k < ornaments.length; k++) {
+      var o = ornaments[k];
+      var po = project(o.x, o.y, o.z, angle);
+      projectedOrns.push({ x: po.x, y: po.y, z: po.z, scale: po.scale, item: o });
+    }
+    projectedOrns.sort(function (a, b) { return a.z - b.z; });
 
-          ctx.fillStyle = gd.lidColor;
-          ctx.fillRect(x, y, bw, lidH);
+    ctx.globalCompositeOperation = 'source-over';
+    for (var m = 0; m < projectedOrns.length; m++) {
+      var po = projectedOrns[m];
+      var item = po.item;
+      var sprite = ornamentSprites[item.type];
+      var depthAlpha = po.z < -1.5 ? 0.55 : 1;
+      var drawSize = po.scale * 1.15 * item.scale;
+      var sway = Math.sin(time * 2.2 + item.swayPhase) * 0.06;
 
-          var ribW = bw * 0.15;
-          ctx.fillStyle = gd.ribbon;
-          ctx.fillRect(p.x - ribW / 2, y, ribW, bh);
-          ctx.fillRect(x + bw * 0.04, y + lidH + (bh - lidH) * 0.42, bw * 0.92, ribW * 0.85);
+      ctx.save();
+      ctx.globalAlpha = depthAlpha;
+      ctx.translate(po.x, po.y);
+      ctx.rotate(sway);
+      ctx.drawImage(sprite, -drawSize / 2, -drawSize / 2, drawSize, drawSize);
+      ctx.restore();
+    }
+  }
 
-          ctx.strokeStyle = gd.ribbon;
-          ctx.lineWidth = Math.max(1.8, bw * 0.045);
-          ctx.beginPath();
-          ctx.ellipse(p.x - bw * 0.1, y - lidH * 0.15, bw * 0.11, lidH * 0.36, -0.35, 0, TAU);
-          ctx.stroke();
-          ctx.beginPath();
-          ctx.ellipse(p.x + bw * 0.1, y - lidH * 0.15, bw * 0.11, lidH * 0.36, 0.35, 0, TAU);
-          ctx.stroke();
+  function drawTopStar(time, angle) {
+    var p = project(0, 7.15, 0, angle);
+    starScreenPos.x = p.x;
+    starScreenPos.y = p.y;
+    starScreenPos.r = Math.max(46, focal * 0.068);
 
-          ctx.fillStyle = 'rgba(235, 200, 218, 0.65)';
-          ctx.font = Math.max(10, Math.round(bw * 0.18)) + 'px "Georgia", serif';
-          ctx.textAlign = 'center';
-          ctx.fillText(gd.id, p.x, y + bh + Math.max(14, bw * 0.26));
-          ctx.restore();
-        }
-      }
+    var pulse = 1 + 0.1 * Math.sin(time * 2.8) + starBurst * 0.55;
+    ctx.save();
+    ctx.translate(p.x, p.y);
 
-      function drawSnowflakes(dt) {
-        ctx.save();
-        ctx.globalCompositeOperation = 'lighter';
-        ctx.strokeStyle = '#f5d5e6';
-        ctx.lineCap = 'round';
+    ctx.globalCompositeOperation = 'lighter';
+    var glowR = focal * (0.14 + starBurst * 0.14);
+    var g = ctx.createRadialGradient(0, 0, 0, 0, 0, glowR);
+    g.addColorStop(0, 'rgba(255, 240, 248, 0.95)');
+    g.addColorStop(0.28, 'rgba(255, 175, 215, 0.45)');
+    g.addColorStop(1, 'rgba(255, 110, 180, 0)');
+    ctx.fillStyle = g;
+    ctx.beginPath();
+    ctx.arc(0, 0, glowR, 0, TAU);
+    ctx.fill();
 
-        for (var i = 0; i < snowFlakes.length; i++) {
-          var f = snowFlakes[i];
-          f.y += f.speed * dt * 45;
-          f.x += Math.sin(f.drift + f.y * 0.012) * 0.35;
-          f.rot += f.rotSpd;
-          if (f.y > H + 20) { f.y = -20; f.x = rand(W); }
+    ctx.scale(pulse, pulse);
+    ctx.globalCompositeOperation = 'source-over';
+    var outerR = focal * 0.044;
+    var innerR = outerR * 0.44;
+    ctx.beginPath();
+    for (var i = 0; i < 10; i++) {
+      var r = i % 2 === 0 ? outerR : innerR;
+      var a = i * Math.PI / 5 - Math.PI / 2;
+      var sx = Math.cos(a) * r;
+      var sy = Math.sin(a) * r;
+      if (i === 0) ctx.moveTo(sx, sy);
+      else ctx.lineTo(sx, sy);
+    }
+    ctx.closePath();
 
-          ctx.save();
-          ctx.translate(f.x, f.y);
-          ctx.rotate(f.rot);
-          ctx.globalAlpha = f.alpha;
-          ctx.lineWidth = Math.max(0.8, f.r * 0.1);
+    var starGrad = ctx.createLinearGradient(-outerR, -outerR, outerR, outerR);
+    starGrad.addColorStop(0, '#ffffff');
+    starGrad.addColorStop(0.5, '#ffd6ea');
+    starGrad.addColorStop(1, '#e895be');
+    ctx.fillStyle = starGrad;
+    ctx.fill();
+    ctx.restore();
+  }
 
-          for (var b = 0; b < 6; b++) {
-            ctx.rotate(Math.PI / 3);
-            ctx.beginPath();
-            ctx.moveTo(0, 0);
-            ctx.lineTo(0, -f.r);
-            ctx.moveTo(0, -f.r * 0.55);
-            ctx.lineTo(-f.r * 0.28, -f.r * 0.78);
-            ctx.moveTo(0, -f.r * 0.55);
-            ctx.lineTo(f.r * 0.28, -f.r * 0.78);
-            ctx.stroke();
-          }
-          ctx.restore();
-        }
-        ctx.restore();
-      }
+  function drawGifts(time, angle) {
+    giftHitBoxes = [];
+    var projectedGifts = [];
 
-      // 弹窗控制
-      var modal = document.getElementById('modal');
-      var mNum = document.getElementById('m-num');
-      var mTitle = document.getElementById('m-title');
-      var mDesc = document.getElementById('m-desc');
-      var mClose = document.getElementById('m-close');
+    for (var i = 0; i < GIFT_DATA.length; i++) {
+      var gd = GIFT_DATA[i];
+      var effAng = gd.angle + Math.sin(angle * 0.5) * 0.22;
+      var gx = Math.sin(effAng) * gd.dist * 0.65;
+      var gz = Math.cos(effAng) * gd.dist * 0.55 + 2.5;
+      var gy = -9.6 + Math.sin(time * 2.4 + i * 1.4) * 0.14;
+      var p = project(gx, gy, gz, 0);
+      projectedGifts.push({ p: p, data: gd, index: i });
+    }
 
-      function closeGiftModal(e) {
-        if (e) e.stopPropagation();
-        modal.classList.remove('show');
-      }
-      mClose.addEventListener('click', closeGiftModal);
-      modal.addEventListener('click', function (e) {
-        if (e.target === modal) closeGiftModal(e);
+    projectedGifts.sort(function (a, b) { return a.p.z - b.p.z; });
+
+    ctx.globalCompositeOperation = 'source-over';
+    for (var j = 0; j < projectedGifts.length; j++) {
+      var item = projectedGifts[j];
+      var p = item.p;
+      var gd = item.data;
+      var bw = p.scale * 2.15;
+      var bh = bw * 0.86;
+      var lidH = bh * 0.24;
+      var x = p.x - bw / 2;
+      var y = p.y - bh / 2;
+
+      var pad = 16;
+      giftHitBoxes.push({
+        x: x - pad,
+        y: y - pad - 10,
+        w: bw + pad * 2,
+        h: bh + pad * 2 + 24,
+        cx: p.x,
+        cy: p.y,
+        data: gd
       });
 
-      function openGiftModal(box) {
-        spawnBurstParticles(box.cx, box.cy, 32);
-        mNum.textContent = 'WISH BOX ' + box.data.id;
-        mTitle.textContent = box.data.title;
-        mDesc.textContent = box.data.desc;
-        modal.classList.add('show');
-      }
+      ctx.save();
+      ctx.fillStyle = 'rgba(0, 0, 0, 0.45)';
+      ctx.beginPath();
+      ctx.ellipse(p.x, y + bh + 4, bw * 0.56, bh * 0.14, 0, 0, TAU);
+      ctx.fill();
 
-      // 指针交互（放宽移动端点击微颤容差至 12px，防止安卓轻触误判为拖动）
-      function handleStart(x, y) {
-        isDragging = true;
-        startX = x;
-        startY = y;
-        lastX = x;
-        totalMoveDist = 0;
-      }
+      var bodyGrad = ctx.createLinearGradient(x, y, x + bw, y + bh);
+      bodyGrad.addColorStop(0, gd.lidColor);
+      bodyGrad.addColorStop(1, gd.boxColor);
+      ctx.fillStyle = bodyGrad;
+      ctx.fillRect(x + bw * 0.04, y + lidH, bw * 0.92, bh - lidH);
 
-      function handleMove(x, y) {
-        if (!isDragging) return;
-        var dx = x - lastX;
-        totalMoveDist += Math.hypot(x - lastX, y - startY);
-        if (totalMoveDist > 12) {
-          userAngle += dx * 0.0068;
-          spawnPointerTrail(x, y);
+      ctx.fillStyle = 'rgba(0,0,0,0.22)';
+      ctx.fillRect(x + bw * 0.04, y + lidH, bw * 0.92, 4);
+
+      ctx.fillStyle = gd.lidColor;
+      ctx.fillRect(x, y, bw, lidH);
+
+      var ribW = bw * 0.15;
+      ctx.fillStyle = gd.ribbon;
+      ctx.fillRect(p.x - ribW / 2, y, ribW, bh);
+      ctx.fillRect(x + bw * 0.04, y + lidH + (bh - lidH) * 0.42, bw * 0.92, ribW * 0.85);
+
+      ctx.strokeStyle = gd.ribbon;
+      ctx.lineWidth = Math.max(1.8, bw * 0.045);
+      ctx.beginPath();
+      ctx.ellipse(p.x - bw * 0.1, y - lidH * 0.15, bw * 0.11, lidH * 0.36, -0.35, 0, TAU);
+      ctx.stroke();
+      ctx.beginPath();
+      ctx.ellipse(p.x + bw * 0.1, y - lidH * 0.15, bw * 0.11, lidH * 0.36, 0.35, 0, TAU);
+      ctx.stroke();
+
+      ctx.fillStyle = 'rgba(235, 200, 218, 0.65)';
+      ctx.font = Math.max(10, Math.round(bw * 0.18)) + 'px "Georgia", serif';
+      ctx.textAlign = 'center';
+      ctx.fillText(gd.id, p.x, y + bh + Math.max(14, bw * 0.26));
+      ctx.restore();
+    }
+  }
+
+  function drawSnowflakes(dt) {
+    ctx.save();
+    ctx.globalCompositeOperation = 'lighter';
+    ctx.strokeStyle = '#f5d5e6';
+    ctx.lineCap = 'round';
+
+    for (var i = 0; i < snowFlakes.length; i++) {
+      var f = snowFlakes[i];
+      f.y += f.speed * dt * 45;
+      f.x += Math.sin(f.drift + f.y * 0.012) * 0.35;
+      f.rot += f.rotSpd;
+      if (f.y > H + 20) { f.y = -20; f.x = rand(W); }
+
+      ctx.save();
+      ctx.translate(f.x, f.y);
+      ctx.rotate(f.rot);
+      ctx.globalAlpha = f.alpha;
+      ctx.lineWidth = Math.max(0.8, f.r * 0.1);
+
+      for (var b = 0; b < 6; b++) {
+        ctx.rotate(Math.PI / 3);
+        ctx.beginPath();
+        ctx.moveTo(0, 0);
+        ctx.lineTo(0, -f.r);
+        ctx.moveTo(0, -f.r * 0.55);
+        ctx.lineTo(-f.r * 0.28, -f.r * 0.78);
+        ctx.moveTo(0, -f.r * 0.55);
+        ctx.lineTo(f.r * 0.28, -f.r * 0.78);
+        ctx.stroke();
+      }
+      ctx.restore();
+    }
+    ctx.restore();
+  }
+
+  var modal = document.getElementById('modal');
+  var mNum = document.getElementById('m-num');
+  var mTitle = document.getElementById('m-title');
+  var mDesc = document.getElementById('m-desc');
+  var mClose = document.getElementById('m-close');
+
+  function closeGiftModal(e) {
+    if (e) e.stopPropagation();
+    modal.classList.remove('show');
+  }
+  mClose.addEventListener('click', closeGiftModal);
+  modal.addEventListener('click', function (e) {
+    if (e.target === modal) closeGiftModal(e);
+  });
+
+  function openGiftModal(box) {
+    spawnBurstParticles(box.cx, box.cy, 32);
+    mNum.textContent = 'WISH BOX ' + box.data.id;
+    mTitle.textContent = box.data.title;
+    mDesc.textContent = box.data.desc;
+    modal.classList.add('show');
+  }
+
+  function handleStart(x, y) {
+    playBgm(false);
+    isDragging = true;
+    startX = x;
+    startY = y;
+    lastX = x;
+    totalMoveDist = 0;
+  }
+
+  function handleMove(x, y) {
+    if (!isDragging) return;
+    var dx = x - lastX;
+    totalMoveDist += Math.hypot(x - lastX, y - startY);
+    if (totalMoveDist > 12) {
+      userAngle += dx * 0.0068;
+      spawnPointerTrail(x, y);
+    }
+    lastX = x;
+  }
+
+  function handleEnd(x, y) {
+    if (!isDragging) return;
+    isDragging = false;
+
+    if (totalMoveDist <= 12) {
+      for (var i = giftHitBoxes.length - 1; i >= 0; i--) {
+        var box = giftHitBoxes[i];
+        if (x >= box.x && x <= box.x + box.w && y >= box.y && y <= box.y + box.h) {
+          openGiftModal(box);
+          return;
         }
-        lastX = x;
       }
 
-      function handleEnd(x, y) {
-        if (!isDragging) return;
-        isDragging = false;
-
-        // 累计位移小于 12px 视为有效点击（兼容安卓手指轻微按压抖动）
-        if (totalMoveDist <= 12) {
-          // 1. 优先检测礼盒点击
-          for (var i = giftHitBoxes.length - 1; i >= 0; i--) {
-            var box = giftHitBoxes[i];
-            if (x >= box.x && x <= box.x + box.w && y >= box.y && y <= box.y + box.h) {
-              openGiftModal(box);
-              return;
-            }
-          }
-
-          // 2. 检测顶部星星点击
-          var distStar = Math.hypot(x - starScreenPos.x, y - starScreenPos.y);
-          if (distStar <= starScreenPos.r) {
-            starBurst = 1.0;
-            spawnBurstParticles(starScreenPos.x, starScreenPos.y, 36);
-            launchFirework(W * 0.25, H * 0.22, 1.15);
-            launchFirework(W * 0.5, H * 0.15, 1.25);
-            launchFirework(W * 0.75, H * 0.22, 1.15);
-            return;
-          }
-
-          // 3. 点击空白夜空放烟花
-          if (y < H * 0.65) {
-            launchFirework(x, y, rand(1.12, 0.85));
-          }
-        }
+      var distStar = Math.hypot(x - starScreenPos.x, y - starScreenPos.y);
+      if (distStar <= starScreenPos.r) {
+        starBurst = 1.0;
+        spawnBurstParticles(starScreenPos.x, starScreenPos.y, 36);
+        launchFirework(W * 0.25, H * 0.22, 1.15);
+        launchFirework(W * 0.5, H * 0.15, 1.25);
+        launchFirework(W * 0.75, H * 0.22, 1.15);
+        return;
       }
 
-      // 统一使用 Pointer Events（如果不支持则回退到 Touch/Mouse），避免安卓端双重事件冲突
-      if (window.PointerEvent) {
-        canvas.addEventListener('pointerdown', function (e) {
-          handleStart(e.clientX, e.clientY);
-        });
-        window.addEventListener('pointermove', function (e) {
-          handleMove(e.clientX, e.clientY);
-        });
-        window.addEventListener('pointerup', function (e) {
-          handleEnd(e.clientX, e.clientY);
-        });
-        window.addEventListener('pointercancel', function () {
-          isDragging = false;
-        });
-      } else {
-        canvas.addEventListener('touchstart', function (e) {
-          if (e.touches.length > 0) {
-            handleStart(e.touches[0].clientX, e.touches[0].clientY);
-          }
-        }, { passive: true });
-        window.addEventListener('touchmove', function (e) {
-          if (e.touches.length > 0) {
-            handleMove(e.touches[0].clientX, e.touches[0].clientY);
-          }
-        }, { passive: true });
-        window.addEventListener('touchend', function (e) {
-          if (e.changedTouches.length > 0) {
-            handleEnd(e.changedTouches[0].clientX, e.changedTouches[0].clientY);
-          }
-        });
+      if (y < H * 0.65) {
+        launchFirework(x, y, rand(1.12, 0.85));
       }
+    }
+  }
 
-      // 主渲染循环
-      var lastTime = 0;
-      function render(now) {
-        var time = now * 0.001;
-        var dt = lastTime ? Math.min(0.05, time - lastTime) : 0.016;
-        lastTime = time;
-
-        if (!isDragging) {
-          userAngle += autoSpeed * dt;
-        }
-        if (starBurst > 0) {
-          starBurst = Math.max(0, starBurst - dt * 1.8);
-        }
-
-        drawBackground(time, dt);
-        updateAndDrawFireworks(time, dt);
-        drawGroundGlow();
-        drawTreeAndOrnaments(time, userAngle);
-        drawMagicSpirits(dt, userAngle);
-        drawTopStar(time, userAngle);
-        drawGifts(time, userAngle);
-        drawSnowflakes(dt);
-
-        requestAnimationFrame(render);
+  if (window.PointerEvent) {
+    canvas.addEventListener('pointerdown', function (e) {
+      handleStart(e.clientX, e.clientY);
+    });
+    window.addEventListener('pointermove', function (e) {
+      handleMove(e.clientX, e.clientY);
+    });
+    window.addEventListener('pointerup', function (e) {
+      handleEnd(e.clientX, e.clientY);
+    });
+    window.addEventListener('pointercancel', function () {
+      isDragging = false;
+    });
+  } else {
+    canvas.addEventListener('touchstart', function (e) {
+      if (e.touches.length > 0) {
+        handleStart(e.touches[0].clientX, e.touches[0].clientY);
       }
+    }, { passive: true });
+    window.addEventListener('touchmove', function (e) {
+      if (e.touches.length > 0) {
+        handleMove(e.touches[0].clientX, e.touches[0].clientY);
+      }
+    }, { passive: true });
+    window.addEventListener('touchend', function (e) {
+      if (e.changedTouches.length > 0) {
+        handleEnd(e.changedTouches[0].clientX, e.changedTouches[0].clientY);
+      }
+    });
+  }
 
-      glowSprites.push(makeGlowSprite([255, 225, 240]));
-      glowSprites.push(makeGlowSprite([255, 150, 200]));
-      glowSprites.push(makeGlowSprite([235, 110, 175]));
-      buildOrnamentSprites();
+  var lastTime = 0;
+  function render(now) {
+    var time = now * 0.001;
+    var dt = lastTime ? Math.min(0.05, time - lastTime) : 0.016;
+    lastTime = time;
 
-      window.addEventListener('resize', resize);
-      resize();
-      requestAnimationFrame(render);
-    })();
+    if (!isDragging) {
+      userAngle += autoSpeed * dt;
+    }
+    if (starBurst > 0) {
+      starBurst = Math.max(0, starBurst - dt * 1.8);
+    }
+
+    drawBackground(time, dt);
+    updateAndDrawFireworks(time, dt);
+    drawGroundGlow();
+    drawTreeAndOrnaments(time, userAngle);
+    drawMagicSpirits(dt, userAngle);
+    drawTopStar(time, userAngle);
+    drawGifts(time, userAngle);
+    drawSnowflakes(dt);
+
+    requestAnimationFrame(render);
+  }
+
+  glowSprites.push(makeGlowSprite([255, 225, 240]));
+  glowSprites.push(makeGlowSprite([255, 150, 200]));
+  glowSprites.push(makeGlowSprite([235, 110, 175]));
+  buildOrnamentSprites();
+
+  window.addEventListener('resize', resize);
+  resize();
+  requestAnimationFrame(render);
+})();
 </script>
 </body>
 </html>
