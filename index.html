@@ -60,44 +60,85 @@
       letter-spacing: 0.05em;
     }
 
-    /* 右上角可爱音乐开关按钮 */
-    .music-btn {
+    /* 右上角音乐胶囊控制组（上一首 / 播放暂停 / 下一首） */
+    .music-bar-wrap {
       position: fixed;
-      top: calc(env(safe-area-inset-top, 0px) + clamp(26px, 5.5vh, 52px));
-      right: clamp(22px, 6vw, 56px);
-      width: 44px;
-      height: 44px;
+      top: calc(env(safe-area-inset-top, 0px) + clamp(24px, 5vh, 48px));
+      right: clamp(18px, 5vw, 52px);
+      display: flex;
+      flex-direction: column;
+      align-items: flex-end;
+      gap: 8px;
+      z-index: 25;
+    }
+    .music-capsule {
+      display: flex;
+      align-items: center;
+      gap: 4px;
+      padding: 4px 6px;
+      border-radius: 999px;
+      background: linear-gradient(145deg, rgba(64, 24, 54, 0.85), rgba(30, 10, 25, 0.92));
+      border: 1px solid rgba(255, 190, 222, 0.42);
+      box-shadow: 0 6px 20px rgba(0, 0, 0, 0.48), 0 0 16px rgba(255, 130, 190, 0.2);
+    }
+    .ctrl-btn {
+      width: 32px;
+      height: 32px;
       border-radius: 50%;
-      background: linear-gradient(145deg, rgba(68, 28, 58, 0.85), rgba(34, 12, 28, 0.92));
-      border: 1.5px solid rgba(255, 190, 222, 0.45);
-      box-shadow: 0 6px 20px rgba(0, 0, 0, 0.45), 0 0 16px rgba(255, 130, 190, 0.22);
+      border: none;
+      background: transparent;
+      color: #f7cfe2;
       display: flex;
       align-items: center;
       justify-content: center;
       cursor: pointer;
-      z-index: 25;
+      padding: 0;
+      transition: transform 0.2s ease, background 0.2s ease, color 0.2s ease;
+    }
+    .ctrl-btn:active {
+      transform: scale(0.86);
+      background: rgba(255, 180, 215, 0.16);
+    }
+    .ctrl-btn svg {
+      width: 16px;
+      height: 16px;
+      fill: currentColor;
+    }
+
+    /* 中间主音符开关按钮 */
+    .music-btn {
+      position: relative;
+      width: 38px;
+      height: 38px;
+      border-radius: 50%;
+      background: linear-gradient(145deg, rgba(96, 38, 80, 0.9), rgba(48, 16, 40, 0.95));
+      border: 1.5px solid rgba(255, 195, 225, 0.55);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      cursor: pointer;
+      padding: 0;
       transition: transform 0.25s cubic-bezier(0.34, 1.56, 0.64, 1), box-shadow 0.3s ease;
     }
     .music-btn:active {
       transform: scale(0.9);
     }
     .music-btn .icon-wrap {
-      width: 22px;
-      height: 22px;
+      width: 20px;
+      height: 20px;
       display: flex;
       align-items: center;
       justify-content: center;
-      position: relative;
     }
     .music-btn svg {
-      width: 20px;
-      height: 20px;
+      width: 18px;
+      height: 18px;
       fill: #ffd8eb;
       filter: drop-shadow(0 0 6px rgba(255, 165, 210, 0.6));
     }
     .music-btn.playing {
-      box-shadow: 0 6px 20px rgba(0, 0, 0, 0.45), 0 0 22px rgba(255, 135, 195, 0.55);
-      border-color: rgba(255, 210, 232, 0.8);
+      box-shadow: 0 0 18px rgba(255, 135, 195, 0.6);
+      border-color: rgba(255, 215, 235, 0.88);
     }
     .music-btn.playing .icon-wrap {
       animation: spinSlow 6s linear infinite;
@@ -105,7 +146,7 @@
     .music-btn.playing::after {
       content: "";
       position: absolute;
-      inset: -5px;
+      inset: -4px;
       border-radius: 50%;
       border: 1px solid rgba(255, 180, 215, 0.45);
       animation: pulseRing 2.2s ease-out infinite;
@@ -113,7 +154,7 @@
     }
     .music-btn .mute-slash {
       position: absolute;
-      width: 24px;
+      width: 21px;
       height: 2px;
       background: #f2a2c8;
       border-radius: 2px;
@@ -123,6 +164,29 @@
     .music-btn.playing .mute-slash {
       opacity: 0;
       transform: rotate(-45deg) scale(0.4);
+    }
+
+    /* 切歌时右上角优雅浮现的歌名提示胶囊 */
+    .track-toast {
+      font-size: 11px;
+      letter-spacing: 0.06em;
+      color: rgba(255, 225, 240, 0.92);
+      background: rgba(42, 16, 36, 0.82);
+      border: 1px solid rgba(255, 185, 220, 0.3);
+      padding: 4px 12px;
+      border-radius: 999px;
+      max-width: 210px;
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+      opacity: 0;
+      transform: translateY(-4px);
+      transition: opacity 0.3s ease, transform 0.3s ease;
+      pointer-events: none;
+    }
+    .track-toast.show {
+      opacity: 1;
+      transform: translateY(0);
     }
 
     @keyframes spinSlow {
@@ -222,7 +286,7 @@
 <body>
 
   <div class="header-overlay">
-    <div class="sub-tag">FOR YI &nbsp;·&nbsp; A LITTLE WINTER WISH</div>
+    <div class="sub-tag"> &nbsp;·&nbsp; </div>
     <h1 class="main-title">Merry Christmas</h1>
     <div class="wish-text">
       愿鲜花与星光，都落在你的愿望里。<br>
@@ -230,21 +294,33 @@
     </div>
   </div>
 
-  <!-- 对应仓库中上传的 bgm.mp3.mp4 文件 -->
-  <audio id="bgm" src="./bgm.mp3.mp4" loop preload="auto" playsinline webkit-playsinline></audio>
+  <!-- 音频播放器（由下方 PLAYLIST 列表自动切换曲目） -->
+  <audio id="bgm" preload="auto" playsinline webkit-playsinline></audio>
 
-  <button class="music-btn" id="music-toggle" aria-label="背景音乐开关">
-    <div class="icon-wrap">
-      <svg viewBox="0 0 24 24">
-        <path d="M12 3v10.55c-.59-.34-1.27-.55-2-.55-2.21 0-4 1.79-4 4s1.79 4 4 4 4-1.79 4-4V7h4V3h-6z"/>
-      </svg>
+  <!-- 右上角：上一首 / 播放暂停 / 下一首 胶囊控制栏 -->
+  <div class="music-bar-wrap">
+    <div class="music-capsule">
+      <button class="ctrl-btn" id="prev-btn" aria-label="上一首" title="上一首">
+        <svg viewBox="0 0 24 24"><path d="M6 6h2v12H6zm3.5 6l8.5 6V6z"/></svg>
+      </button>
+      <button class="music-btn" id="music-toggle" aria-label="播放/暂停" title="播放/暂停">
+        <div class="icon-wrap">
+          <svg viewBox="0 0 24 24">
+            <path d="M12 3v10.55c-.59-.34-1.27-.55-2-.55-2.21 0-4 1.79-4 4s1.79 4 4 4 4-1.79 4-4V7h4V3h-6z"/>
+          </svg>
+        </div>
+        <span class="mute-slash"></span>
+      </button>
+      <button class="ctrl-btn" id="next-btn" aria-label="下一首" title="下一首">
+        <svg viewBox="0 0 24 24"><path d="M6 18l8.5-6L6 6v12zM16 6v12h2V6h-2z"/></svg>
+      </button>
     </div>
-    <span class="mute-slash"></span>
-  </button>
+    <div class="track-toast" id="track-toast">♪ 01 · Wasted (Nightcore)</div>
+  </div>
 
   <canvas id="c"></canvas>
 
-  <div class="footer-hint">拖动旋转 &nbsp;·&nbsp; 点开礼物 &nbsp;·&nbsp; 点击星星或夜空放烟花</div>
+  <div class="footer-hint"> &nbsp;·&nbsp;  &nbsp;·&nbsp; </div>
 
   <div class="modal-mask" id="modal">
     <div class="gift-card">
@@ -259,11 +335,35 @@
 (function () {
   'use strict';
 
+  // ================= 歌单配置区（以后加新歌只需往仓库传文件并在这里加一行） =================
+  var PLAYLIST = [
+    { title: 'Wasted (Nightcore)', src: './bgm.mp3.mp4' },
+    { title: '冬日恋歌 02', src: './bgm2.mp3' },
+    { title: '星光圣诞 03', src: './bgm3.mp3' }
+  ];
+
   var bgm = document.getElementById('bgm');
   var musicBtn = document.getElementById('music-toggle');
+  var prevBtn = document.getElementById('prev-btn');
+  var nextBtn = document.getElementById('next-btn');
+  var trackToast = document.getElementById('track-toast');
+
+  var currentTrack = 0;
   var userExplicitlyMuted = false;
+  var toastTimer = null;
 
   bgm.volume = 0.75;
+  bgm.src = PLAYLIST[0].src;
+
+  function showTrackName() {
+    var numStr = (currentTrack + 1 < 10 ? '0' : '') + (currentTrack + 1);
+    trackToast.textContent = '♪ ' + numStr + '/' + (PLAYLIST.length < 10 ? '0' : '') + PLAYLIST.length + ' · ' + PLAYLIST[currentTrack].title;
+    trackToast.classList.add('show');
+    if (toastTimer) clearTimeout(toastTimer);
+    toastTimer = setTimeout(function () {
+      trackToast.classList.remove('show');
+    }, 2800);
+  }
 
   function updateMusicUI() {
     if (!bgm.paused) {
@@ -273,13 +373,13 @@
     }
   }
 
-  function playBgm(fromUserClick) {
-    if (!bgm.paused) return;
+  function playBgm(fromUserClick, showName) {
     if (!fromUserClick && userExplicitlyMuted) return;
     var playPromise = bgm.play();
     if (playPromise !== undefined) {
       playPromise.then(function () {
         updateMusicUI();
+        if (showName) showTrackName();
       }).catch(function () {
         updateMusicUI();
       });
@@ -292,8 +392,47 @@
     updateMusicUI();
   }
 
+  function switchTrack(step, btnEl) {
+    currentTrack = (currentTrack + step + PLAYLIST.length) % PLAYLIST.length;
+    userExplicitlyMuted = false;
+    bgm.src = PLAYLIST[currentTrack].src;
+    bgm.load();
+    playBgm(true, true);
+    if (btnEl) {
+      var rect = btnEl.getBoundingClientRect();
+      spawnBurstParticles(rect.left + rect.width / 2, rect.top + rect.height / 2, 14);
+    }
+  }
+
+  // 一首歌播完自动切到下一首，实现整个歌单循环
+  bgm.addEventListener('ended', function () {
+    switchTrack(1, null);
+  });
+
+  // 如果某首备用歌还没上传到仓库导致加载失败，自动跳过切到下一首可用歌曲
+  bgm.addEventListener('error', function () {
+    if (PLAYLIST.length > 1) {
+      var nextIdx = (currentTrack + 1) % PLAYLIST.length;
+      if (nextIdx !== currentTrack) {
+        currentTrack = nextIdx;
+        bgm.src = PLAYLIST[currentTrack].src;
+        if (!userExplicitlyMuted) playBgm(false, false);
+      }
+    }
+  });
+
   bgm.addEventListener('play', updateMusicUI);
   bgm.addEventListener('pause', updateMusicUI);
+
+  prevBtn.addEventListener('click', function (e) {
+    e.stopPropagation();
+    switchTrack(-1, prevBtn);
+  });
+
+  nextBtn.addEventListener('click', function (e) {
+    e.stopPropagation();
+    switchTrack(1, nextBtn);
+  });
 
   musicBtn.addEventListener('click', function (e) {
     e.stopPropagation();
@@ -301,14 +440,14 @@
       pauseBgm(true);
     } else {
       userExplicitlyMuted = false;
-      playBgm(true);
+      playBgm(true, true);
       var rect = musicBtn.getBoundingClientRect();
       spawnBurstParticles(rect.left + rect.width / 2, rect.top + rect.height / 2, 16);
     }
   });
 
   document.addEventListener('WeixinJSBridgeReady', function () {
-    playBgm(false);
+    playBgm(false, false);
   }, false);
 
   document.addEventListener('visibilitychange', function () {
@@ -317,6 +456,7 @@
     }
   });
 
+  // ================= 3D 圣诞树与粒子场景 =================
   var canvas = document.getElementById('c');
   var ctx = canvas.getContext('2d', { alpha: false });
   var TAU = Math.PI * 2;
@@ -1140,7 +1280,7 @@
   }
 
   function handleStart(x, y) {
-    playBgm(false);
+    playBgm(false, false);
     isDragging = true;
     startX = x;
     startY = y;
